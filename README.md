@@ -65,3 +65,14 @@ jupyter notebook
 - Your Jupyter notebook will open in your default browser (usually at `http://localhost:8888`)
 - To deactivate the virtual environment when finished, run: `deactivate`
 - This README.MD file was generated using Claude AI Haiku 4.5 for formatting purposes and organization given the inputted Quick Start Commands
+
+  ## SOURCES
+
+[1] Zettili, N. (2009). Quantum mechanics: Concepts and Applications (3rd ed., p. 22). Wiley. 
+
+[2] Carroll, B. W., & Ostlie, D. A. (2007). Introduction to modern astrophysics (2nd ed., p. 36). Pearson. 
+
+[3] OpenAI. (2026). Developer quickstart. Retrieved from https://platform.openai.com/docs/quickstart
+
+[4] Anthropic. (2026). Claude (Version Haiku 4.5) [Large language model]. https://claude.ai
+
