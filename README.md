@@ -21,10 +21,11 @@ Activate the virtual environment:
 ```bash
 source .venv/bin/activate
 ```
-### Step 5: Install Dependencies
+### Step 5: Install Dependencies and add the API KEY provided from class
 Install all required packages:
 ```bash
 pip install -r requirements.txt
+echo "ANTHROPIC_API_KEY=your_api_key_here" > .env 
 ```
 ### Step 6: Launch Jupyter Notebook
 Start the Jupyter notebook:
@@ -44,6 +45,7 @@ cd ai-physics-alexis
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+echo "ANTHROPIC_API_KEY=your_api_key_here" > .env
 jupyter notebook
 ```
 
