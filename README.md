@@ -1,7 +1,5 @@
 # AI Physics Alexis
-
 ## Setup Instructions
-
 Follow these steps to set up and run the project:
 ### Step 1: Clone the Repository
 Clone the git repository to your local machine:
@@ -57,3 +55,4 @@ jupyter notebook
 - The virtual environment (`.venv`) isolates project dependencies
 - Your Jupyter notebook will open in your default browser (usually at `http://localhost:8888`)
 - To deactivate the virtual environment when finished, run: `deactivate`
+- This README.MD file was generated using Claude AI Haiku 4.5 for formatting purposes and organization given the inputted Quick Start Commands
