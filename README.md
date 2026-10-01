@@ -43,6 +43,8 @@ Run all commands in sequence:
 ```bash
 git clone https://github.com/bhalex86/ai-physics-alexis.git
 cd ai-physics-alexis
+git checkout master
+git pull origin master
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
