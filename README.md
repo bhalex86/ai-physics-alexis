@@ -9,6 +9,8 @@ git clone https://github.com/bhalex86/ai-physics-alexis.git
 Access the cloned repository:
 ```bash
 cd ai-physics-alexis
+git checkout master
+git pull origin master
 ```
 ### Step 3: Create a Virtual Environment
 Create a Python 3 virtual environment:
