@@ -1,6 +1,6 @@
 # Week 03 Bug Report
 **File:** `ai_generated_oscillator.py`
-
+This document was generated on Claud from a google document chart written by the user for formatting purposes
 ---
 
 ## Bug #1 — Wrong Physics Formula
