@@ -23,7 +23,7 @@ source .venv/bin/activate
 ### Step 5: Install Dependencies 
 Install all required packages:
 ```bash
-pip install -r requirements.yml
+pip install -r requirements.txt
 
 ```
 ### Step 6: Launch Jupyter Notebook
@@ -43,7 +43,7 @@ git clone https://github.com/bhalex86/ai-physics-alexis.git
 cd ai-physics-alexis
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.yml
+pip install -r requirements.txt
 jupyter notebook
 ```
 
