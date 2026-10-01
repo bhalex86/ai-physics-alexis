@@ -1,6 +1,6 @@
 # Week 03 Bug Report
 **File:** `ai_generated_oscillator.py`
-This document was generated on Claud from a google document chart written by the user for formatting purposes
+
 ---
 
 ## Bug #1 — Wrong Physics Formula
@@ -70,3 +70,4 @@ The plotting that the AI provided was ψ against x, when it was supposed to plot
 ```
 
 **Citation:** Zettili, N. (2009). *Quantum Mechanics: Concepts and Applications* (3rd ed., p. 189, eq. 3.8). Wiley.
+This document was generated on Claude from a google document chart written by the user for formatting purposes
