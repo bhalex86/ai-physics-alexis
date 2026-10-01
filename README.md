@@ -54,8 +54,7 @@ jupyter notebook
 - Make sure you have **Python 3** installed on your system
 - The virtual environment (`.venv`) isolates project dependencies
 - Your Jupyter notebook will open in your default browser (usually at `http://localhost:8888`)
-- To deactivate the virtual environment when finished, run: `deactivate`
-- This README.MD file was generated using Claude AI Haiku 4.5 for formatting purposes and organization given the inputted Quick Start Commands
+- This README.MD file was generated using Claude AI Sonnet 4.6 for formatting purposes and organization given the inputted Quick Start Commands
 
   ## SOURCES
 
