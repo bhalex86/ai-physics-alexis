@@ -51,8 +51,8 @@ git pull origin assignment3
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-echo "ANTHROPIC_API_KEY=your_api_key_here" > .env
 pip install python-dotenv
+echo "ANTHROPIC_API_KEY=your_api_key_here" > .env
 jupyter notebook
 ```
 
