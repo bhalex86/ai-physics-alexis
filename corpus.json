@@ -1,0 +1,443 @@
+[
+  {
+    "id": "astro-ph/0609027v1",
+    "title": "A U-band survey of brown dwarfs in the Taurus Molecular Cloud with the XMM-Newton Optical/UV Monitor",
+    "authors": [
+      "Nicolas Grosso",
+      "Marc Audard",
+      "Jérôme Bouvier",
+      "Kevin R. Briggs",
+      "Manuel Güdel",
+      "the The XMM-Newton Extended Surveyof the Taurus Molecular Cloud",
+      " Collaboration"
+    ],
+    "abstract": "  We aim to characterize the U-band variability of young brown dwarfs in the Taurus Molecular Cloud and discuss its origin. We used the XMM-Newton Extended Survey of the Taurus Molecular Cloud, where a sample of 11 young bona fide brown dwarfs (spectral type later than M6) were observed simultaneously in X-rays with XMM-Newton and in the U-band with the XMM-Newton Optical/UV Monitor (OM). We obtained upper limits to the U-band emission of 10 brown dwarfs (U>19.6-20.6 mag), whereas 2MASSJ04141188+2811535 was detected in the U-band. Remarkably, the magnitude of this brown dwarf increased regularly from U~19.5 mag at the beginning of the observation, peaked 6h later at U~18.4 mag, and then decreased to U~18.65 mag in the next 2h. The first OM U-band measurement is consistent with the quiescent level observed about one year later thanks to ground follow-up observations. This brown dwarf was not detected in X-rays by XMM-Newton during the OM observation. We discuss the possible sources of U-band variability for this young brown dwarf, namely a magnetic flare, non-steady accretion onto the substellar surface, and rotational modulation of a hot spot. We conclude that this event is related to accretion from a circumsubstellar disk, where the mass accretion rate was about a factor of 3 higher than during the quiescent level.",
+    "published": "2006-09-01 13:24:57+00:00",
+    "pdf_url": "https://arxiv.org/pdf/astro-ph/0609027v1"
+  },
+  {
+    "id": "astro-ph/9909356v1",
+    "title": "Prolate Cores in Filamentary Molecular Clouds",
+    "authors": [
+      "Jason D. Fiege",
+      "Ralph E. Pudritz"
+    ],
+    "abstract": "  We present a new model of molecular cloud cores that originate from filamentary clouds that are threaded by helical magnetic fields. Only modest toroidal fields are required to produce elongated cores, with intrinsic axis ratios in the range 0.1 <= q <= 0.9 and mean projected axis ratios in the range 0.3 <= <p> <= 1. Thus many of our models are in good agreement with the observed shapes of cores (Myers et al 1991, Ryden 1996), which find axis ratios distributed about the mean values <p> \\approx 0.5-0.6 and q \\approx 0.4-0.5. We find that the Bonnor-Ebert critical mass is reduced by about 20% by the helical field threading our models. We also find that models are generally most elongated when the mass is significantly less than the Bonnor-Ebert critical mass for unmagnetized cores.",
+    "published": "1999-09-21 19:04:24+00:00",
+    "pdf_url": "https://arxiv.org/pdf/astro-ph/9909356v1"
+  },
+  {
+    "id": "1712.10044v1",
+    "title": "Gravitational instability of filamentary molecular clouds, including ambipolar diffusion; Non-isothermal filament",
+    "authors": [
+      "Mohammad Hosseinirad",
+      "Shahram Abbassi",
+      "Mahmood Roshan",
+      "Kazem Naficy"
+    ],
+    "abstract": "Recent observations of the filamentary molecular clouds show that their properties deviate from the isothermal equation of state. Theoretical investigations proposed that the logatropic and the polytropic equations of state with negative indexes can provide a better description for these filamentary structures. Here, we aim to compare the effects of these softer non-isothermal equation of states with their isothermal counterpart on the global gravitational instability of a filamentary molecular cloud. By incorporating the ambipolar diffusion, we use the non-ideal magnetohydrodynamics framework for a filament that is threaded by a uniform axial magnetic field. We perturb the fluid and obtain the dispersion relation both for the logatropic and polytropic equations of state by taking the effects of magnetic field and ambipolar diffusion into account. Our results suggest that, in absence of the magnetic field, a softer equation of state makes the system more prone to gravitational instability. We also observed that a moderate magnetic field is able to enhance the stability of the filament in a way that is sensitive to the equation of state in general. However, when the magnetic field is strong, this effect is suppressed and all the equations of state have almost the same stability properties. Moreover, we find that for all the considered equations of state, the ambipolar diffusion has destabilizing effects on the filament.",
+    "published": "2017-12-28 20:04:55+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1712.10044v1"
+  },
+  {
+    "id": "astro-ph/0206311v1",
+    "title": "Shapes of Molecular Cloud Cores and the Filamentary Mode of Star Formation",
+    "authors": [
+      "Charles L. Curry"
+    ],
+    "abstract": "  Using recent dust continuum data, we generate the intrinsic ellipticity distribution of dense, starless molecular cloud cores. Under the hypothesis that the cores are all either oblate or prolate randomly-oriented spheroids, we show that a satisfactory fit to observations can be obtained with a gaussian prolate distribution having a mean intrinsic axis ratio of 0.54. Further, we show that correlations exist between the apparent axis ratio and both the peak intensity and total flux density of emission from the cores, the sign of which again favours the prolate hypothesis. The latter result shows that the mass of a given core depends on its intrinsic ellipticity. Monte Carlo simulations are performed to find the best-fit power law of this dependence. Finally, we show how these results are consistent with an evolutionary scenario leading from filamentary parent clouds to increasingly massive, condensed, and roughly spherical embedded cores.",
+    "published": "2002-06-18 16:30:37+00:00",
+    "pdf_url": "https://arxiv.org/pdf/astro-ph/0206311v1"
+  },
+  {
+    "id": "1407.6897v1",
+    "title": "Evolution of Prolate Molecular Clouds at HII Boundaries: I. Formation of fragment-core structures",
+    "authors": [
+      "Timothy M. Kinnear",
+      "Jingqi Miao",
+      "Glenn J. White",
+      "Simon Goodwin"
+    ],
+    "abstract": "The evolution of a prolate cloud at an Hii boundary is investigated using Smoothed Particle Hydrodynamics (SPH). The prolate molecular clouds in our investigation are set with their semi-major axis perpendicular to the radiative direction of a plane parallel ionising Extreme Ultraviolet (EUV) flux.\n  Simulations on three high mass prolate clouds reveal that EUV radiation can trigger distinctive high density core formation embedded in a final linear structure. This contrasts with results of the previous work in which only an isotropic Far Ultraviolet (FUV) interstellar background flux was applied.\n  A systematic investigation on a group of prolate clouds of equal mass but different initial densities and geometric shapes finds that the distribution of the cores over the final linear structure changes with the initial conditions of the prolate cloud and the strength of the EUV radiation flux. These highly condensed cores may either scatter over the full length of the final linear structure or form two groups of high density cores at two foci, depending on the value of the ionising radiation penetration depth d_EUV, the ratio of the physical ionising radiation penetration depth to the minor axis of the cloud. Data anlysis on the total mass of the high density cores and the core formation time finds that the potential for EUV radiation triggered star formation efficiency is higher in prolate clouds with shallow ionisation penetration depth and intermediate major to minor axial ratio, for the physical environments investigated.\n  Finally, it is suggested that the various fragment-core structures observed at Hii boundaries may result from the interaction between ionising radiation and pre-existing prolate clouds of different initial geometrical and physical conditions.",
+    "published": "2014-07-25 13:57:41+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1407.6897v1"
+  },
+  {
+    "id": "astro-ph/9905148v2",
+    "title": "A New Model for Filamentary Molecular Clouds",
+    "authors": [
+      "Jason D. Fiege",
+      "Ralph E. Pudritz"
+    ],
+    "abstract": "  We develop a theory for filamentary molecular clouds including the effects of ordered magnetic fields, and external pressure. We first derive a form of the virial equation appropriate for filamentary clouds. By comparing with observational results collected from the literature, we find that the fields are likely helical. Secondly, we construct numerical, MHD models of filamentary clouds that agree with the observational constraints. We find that our models produce much more realistic density profiles $r\\sim r^{-1.8 to -2}$ than previous models, where the density falls off as $r^{-4}$.",
+    "published": "1999-05-12 19:37:19+00:00",
+    "pdf_url": "https://arxiv.org/pdf/astro-ph/9905148v2"
+  },
+  {
+    "id": "1408.2479v1",
+    "title": "Collapse and Fragmentation of Magnetic Molecular Cloud Cores with the Enzo AMR MHD Code. II. Prolate and Oblate Cores",
+    "authors": [
+      "A. P. Boss",
+      "S. A. Keiser"
+    ],
+    "abstract": "We present the results of a large suite of three-dimensional (3D) models of the collapse of magnetic molecular cloud cores using the adaptive mesh refinement (AMR) code Enzo2.2 in the ideal magnetohydrodynamics (MHD) approximation. The cloud cores are initially either prolate or oblate, centrally condensed clouds with masses of 1.73 or 2.73 $M_\\odot$, respectively. The radial density profiles are Gaussian, with central densities 20 times higher than boundary densities. A barotropic equation of state is used to represent the transition from low density, isothermal phases, to high density, optically thick phases. The initial magnetic field strength ranges from 6.3 to 100 $μ$G, corresponding to clouds that are strongly to marginally supercritical, respectively, in terms of the mass to magnetic flux ratio. The magnetic field is initially uniform and aligned with the clouds' rotation axes, with initial ratios of rotational to gravitational energy ranging from $10^{-4}$ to 0.1. Two significantly different outcomes for collapse result: (1) formation of single protostars with spiral arms, and (2) fragmentation into multiple protostar systems. The transition between these two outcomes depends primarily on the initial magnetic field strength, with fragmentation occurring for mass to flux ratios greater than about 14 times the critical ratio for prolate clouds. Oblate clouds typically fragment into several times more clumps than prolate clouds. Multiple, rather than binary, system formation is the general rule in either case, suggesting that binary stars are primarily the result of the orbital dissolution of multiple protostar systems.",
+    "published": "2014-08-11 17:38:20+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1408.2479v1"
+  },
+  {
+    "id": "astro-ph/9901096v3",
+    "title": "Helical Fields and Filamentary Molecular Clouds",
+    "authors": [
+      "Jason D. Fiege",
+      "Ralph E. Pudritz"
+    ],
+    "abstract": "  We study the equilibrium of pressure truncated, filamentary molecular clouds that are threaded by rather general helical magnetic fields. We first derive a new virial equation appropriate for magnetized filamentary clouds, which includes the effects of non-thermal motions and the turbulent pressure of the surrounding ISM. When compared with the data, we find that many filamentary clouds have a mass per unit length that is significantly reduced by the effects of external pressure, and that toroidal fields play a significant role in squeezing such clouds.\n  We also develop exact numerical MHD models of filamentary molecular clouds with more general helical field configurations than have previously been considered. We also examine the effects of the equation of state by comparing ``isothermal'' filaments, with constant total (thermal plus turbulent) velocity dispersion, with equilibria constructed using a logatropic equation of state.\n  We perform a Monte Carlo exploration of our parameter space to determine which choices of parameters result in models that agree with the available observational constraints. We find that both equations of state result in equilibria that agree with the observational results. Moreover, we find that models with helical fields have more realistic density profiles than either unmagnetized models or those with purely poloidal fields; we find that most isothermal models have density distributions that fall off as r^{-1.8} to r^{-2}, while logatropes have density profiles that range from r^{-1} to r^{-1.8}. We find that purely poloidal fields produce filaments with steep density gradients that not allowed by the observations.",
+    "published": "1999-01-08 22:59:05+00:00",
+    "pdf_url": "https://arxiv.org/pdf/astro-ph/9901096v3"
+  },
+  {
+    "id": "2102.00163v2",
+    "title": "Gravitational instability of non-isothermal filamentary molecular clouds, in presence of external pressure",
+    "authors": [
+      "Mohammad Mahdi Motiei",
+      "Mohammad Hosseinirad",
+      "Shahram Abbassi"
+    ],
+    "abstract": "Filamentary molecular clouds are omnipresent in the cold interstellar medium. Observational evidences show that the non-isothermal equations of state describe the filaments properties better than the isothermal one. In this paper we use the logatropic and the polytropic equations of state to study the gravitational instability of the pressure-confined filaments in presence of a uniform axial magnetic field. To fully explore the parameter space we carry out very large surveys of stability analysis that cover filaments with different radii in various magnetic fields. Our results show that for all the equations of state the instability of thinner filaments is more sensitive to the magnetic field variations than the thicker ones. Moreover, for all the equations of state, an intermediate magnetic field can entirely stabilize the thinner filaments. Albeit for the thicker ones this effect is suppressed for the magnetic field stronger than B ' 70 micro G.",
+    "published": "2021-01-30 06:23:27+00:00",
+    "pdf_url": "https://arxiv.org/pdf/2102.00163v2"
+  },
+  {
+    "id": "0903.1810v1",
+    "title": "Collapse and Fragmentation of Molecular Cloud Cores. X. Magnetic Braking of Prolate and Oblate Cores",
+    "authors": [
+      "Alan P. Boss"
+    ],
+    "abstract": "  The collapse and fragmentation of initially prolate and oblate, magnetic molecular clouds is calculated in three dimensions with a gravitational, radiative hydrodynamics code. The code includes magnetic field effects in an approximate manner: magnetic pressure, tension, braking, and ambipolar diffusion are all modelled. The parameters varied for both the initially prolate and oblate clouds are the initial degree of central concentration of the radial density profile, the initial angular velocity, and the efficiency of magnetic braking (represented by a factor $f_{mb} = 10^{-4}$ or $10^{-3}$). The oblate cores all collapse to form rings that might be susceptible to fragmentation into multiple systems. The outcome of the collapse of the prolate cores depends strongly on the initial density profile. Prolate cores with central densities 20 times higher than their boundary densities collapse and fragment into binary or quadruple systems, whereas cores with central densities 100 times higher collapse to form single protostars embedded in bars. The inclusion of magnetic braking is able to stifle protostellar fragmentation in the latter set of models, as when identical models were calculated without magnetic braking (Boss 2002), those cores fragmented into binary protostars. These models demonstrate the importance of including magnetic fields in studies of protostellar collapse and fragmentation, and suggest that even when magnetic fields are included, fragmentation into binary and multiple systems remains as a possible outcome of protostellar collapse.",
+    "published": "2009-03-10 16:25:00+00:00",
+    "pdf_url": "https://arxiv.org/pdf/0903.1810v1"
+  },
+  {
+    "id": "1702.03529v1",
+    "title": "Effect of magnetic field on the rotating filamentary molecular clouds",
+    "authors": [
+      "P. Aghili",
+      "K. Kokabi"
+    ],
+    "abstract": "Purpose of this work is study evolution of magnetized rotating filamentary molecular cloud's. We will consider cylindrical symmetric filamentary molecular clouds at the early stage of evolution. For the first time we consider rotation of filamentary molecular in presence of an axial and azimuthal magnetic field without any assumption of density and magnetic functions. We show that in addition to decreasing of radial collapse velocity, the rotational velocity also affected by magnetic field. Existence of rotation yields to fragment of filament. Moreover, we show that the magnetic field have significant effect on the fragmentation of filamentary molecular clouds.",
+    "published": "2017-02-12 14:10:16+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1702.03529v1"
+  },
+  {
+    "id": "2304.10863v1",
+    "title": "Properties of the dense cores and filamentary structures in the Vela C molecular cloud",
+    "authors": [
+      "Xue-Mei Li",
+      "Guo-Yin Zhang",
+      "Alexander Men'shchikov",
+      "Jin-Zeng Li",
+      "Chang Zhang",
+      "Zhong-Zu Wu"
+    ],
+    "abstract": "The initial and boundary conditions of the Galactic star formation in molecular clouds are not well understood. In an effort to shed new light on this long-standing problem, we measured properties of dense cores and filamentary structures in the Vela C molecular cloud, observed with Herschel. We applied the getsf extraction method to separate the components of sources and filaments from each other and their backgrounds, before detecting, measuring, and cataloging the structures. The cores and filamentary structures constitute 40% of the total mass of Vela C, most of the material is in the low-density molecular background cloud. We selected 570 reliable cores, of which 149 are the protostellar cores and 421 are the starless cores. Almost 78% of the starless cores were identified with the gravitationally bound prestellar cores. The exponent of the CMF (alpha = 1.35) is identical to that of the Salpeter IMF. We selected 68 filaments with at least one side that appeared not blended with adjacent structures. The filament widths are in the range of 0.15 pc to 0.63 pc, and have a median value of W = 0.3(0.11) pc. The surface densities of filaments are well correlated with their contrasts and linear densities. Within uncertainties of the filament instability criterion, many filaments may well be both supercritical and subcritical. A large fraction of filaments may definitely be considered supercritical, in which are found 94 prestellar cores, 83 protostellar cores, and only 1 unbound starless core. Taking into account the uncertainties, the supercritical filaments contain only prestellar and protostellar cores. Our findings support the idea that there exists a direct relationship between the CMF and IMF and that filaments play a key role in the formation of prestellar cores, which is consistent with the previous Herschel results.",
+    "published": "2023-04-21 10:20:40+00:00",
+    "pdf_url": "https://arxiv.org/pdf/2304.10863v1"
+  },
+  {
+    "id": "1510.05141v1",
+    "title": "Molecular Cloud Fragmentation and Core Collapse",
+    "authors": [
+      "Shantanu Basu"
+    ],
+    "abstract": "I review some steps in the conversion of molecular cloud gas into stars and planets, with an emphasis in this presentation on the early stage molecular cloud fragmentation that leads to elongated filaments/ribbons. Magnetic fields can play a crucial role in all stages and need to be invoked particularly for early stage fragmentation as well as in late core collapse where it may control disk formation. I also review some elements of hydrodynamic modeling of disk evolution.",
+    "published": "2015-10-17 15:57:43+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1510.05141v1"
+  },
+  {
+    "id": "2203.03309v1",
+    "title": "$Herschel$ investigation of cores and filamentary structures in the Perseus molecular cloud",
+    "authors": [
+      "Chang Zhang",
+      "Guo-Yin Zhang",
+      "Jin-Zeng Li",
+      "Xue-Mei Li"
+    ],
+    "abstract": "Cores and filamentary structures are the prime birthplaces of stars, and play key roles in the process of star formation. Latest advances in the methods of multi-scale source and filament extraction, and in making high-resolution column density map from $Herschel$ multi-wavelength observations enable us to detect the filamentary network structures in highly complex molecular cloud environments. The statistics for physical parameters shows that core mass strongly correlates with core dust temperature, and $M/L$ strongly correlates with $M/T$, which is in line with the prediction of the blackbody radiation, and can be used to trace evolutionary sequence from unbound starless cores to robust prestellar cores. Crest column densities of the filamentary structures are clearly related with mass per unit length ($M_{\\rm line}$), but are uncorrelated by three orders ranging from $\\sim 10^{20}$ to $\\sim 10^{22}$ $ \\rm cm^{-2}$ with widths. Full width at half maximum (FWHM) have a median value of 0.15 pc, which is consistent with the 0.1 pc typical inner width of the filamentary structures reported by previous research. We find $\\sim $70\\% of robust prestellar cores (135/199) embedded in supercritical filaments with $M_{\\rm line}>16~M_{\\odot}/{\\rm pc}$, which implies that the gravitationally bound cores come from fragmentation of supercritical filaments. And on the basis of observational evidences that probability distribution function (PDF) with power-law distribution in the Perseus south is flatter than north, YSO number is significantly less than that in the north, and dust temperature difference. We infer that south region is more gravitationally bound than north region.",
+    "published": "2022-03-07 11:36:06+00:00",
+    "pdf_url": "https://arxiv.org/pdf/2203.03309v1"
+  },
+  {
+    "id": "1801.07805v1",
+    "title": "The dense cores and filamentary structure of the molecular cloud in Corona Australis. Herschel SPIRE and PACS observations from the Herschel Gould Belt Survey",
+    "authors": [
+      "David Bresnahan",
+      "D. Ward-Thompson",
+      "J. M. Kirk",
+      "K. Pattle",
+      "S. Eyres",
+      "G. J. White",
+      "V. Könyves",
+      "A. Menshchikov",
+      "Ph. André",
+      "N. Schneider",
+      "J. Di Francesco",
+      "D. Arzoumanian",
+      "M. Benedettini",
+      "B. Ladjelate",
+      "P. Palmeirim",
+      "A. Bracco",
+      "S. Molinari",
+      "S. Pezzuto",
+      "L. Spinoglio"
+    ],
+    "abstract": "We present a catalogue of prestellar and starless cores within the Corona Australis molecular cloud using photometric data from the Herschel Space Observatory. At a distance of d~130 pc, Corona Australis is one of the closest star-forming regions. Herschel has taken multi-wavelength data of Corona Australis with both the SPIRE and PACS photometric cameras in a parallel mode with wavelengths in the range 70 μm to 500 μm. A complete sample of starless and prestellar cores and embedded protostars is identified. Other results from the Herschel Gould Belt Survey have shown spatial correlation between the distribution of dense cores and the filamentary structure within the molecular clouds. We go further and show correlations between the properties of these cores and their spatial distribution within the clouds, with a particular focus on the mass distribution of the dense cores with respect to their filamentary proximity. We find that only lower-mass starless cores form away from filaments, while all of the higher-mass prestellar cores form in close proximity to, or directly on the filamentary structure. This result supports the paradigm that prestellar cores mostly form on filaments. We analyse the mass distribution across the molecular cloud, finding evidence that the region around the Coronet appears to be at a more dynamically advanced evolutionary stage to the rest of the clumps within the cloud.",
+    "published": "2018-01-23 23:05:12+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1801.07805v1"
+  },
+  {
+    "id": "1512.06630v1",
+    "title": "Fragmentation in filamentary molecular clouds",
+    "authors": [
+      "Yanett Contreras",
+      "Guido Garay",
+      "Jill M. Rathborne",
+      "Patricio Sanhueza"
+    ],
+    "abstract": "Recent surveys of dust continuum emission at sub-mm wavelengths have shown that filamentary molecular clouds are ubiquitous along the Galactic plane. These structures are inhomogeneous, with over-densities that are sometimes associated with infrared emission and active of star formation. To investigate the connection between filaments and star formation, requires an understanding of the processes that lead to the fragmentation of filaments and a determination of the physical properties of the over-densities (clumps). In this paper, we present a multi-wavelength study of five filamentary molecular clouds, containing several clumps in different evolutionary stages of star formation. We analyse the fragmentation of the filaments and derive the physical properties of their clumps. We find that the clumps in all filaments have a characteristic spacing consistent with the prediction of the `sausage' instability theory, regardless of the complex morphology of the filaments or their evolutionary stage. We also find that most clumps have sufficient mass and density to form high-mass stars, supporting the idea that high-mass stars and clusters form within filaments.",
+    "published": "2015-12-21 14:04:55+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1512.06630v1"
+  },
+  {
+    "id": "0912.3044v1",
+    "title": "The Equilibrium Structure of Prolate Magnetized Molecular Cores",
+    "authors": [
+      "Michael J. Cai",
+      "Ronald E. Taam"
+    ],
+    "abstract": "  The structure of molecular cloud cores supported by thermal pressure and a poloidal magnetic field is reinvestigated in the magnetohydrostatic and axisymmetric approximation. In addition to oblate configurations found in earlier work, solutions yielding prolate spheroidal shapes have also been obtained for a reference state described by a uniform sphere threaded by a uniform background magnetic field. The solutions for prolate configurations are found to be relevant for lower masses than for their oblate counterparts. Of particular importance is the result that the prolate cloud cores have radii less than a maximum given by $0.25 pc (a/0.2km/s)^2 (P_{\\rm ext}/10^{-12} dyne/cm^2)^{-1/2}$, where $a$ is the sound speed and $P_{\\rm ext}$ is the external pressure of the background medium. The existence of such solutions obviates the presence of toroidal fields in such modeled structures.",
+    "published": "2009-12-16 02:19:46+00:00",
+    "pdf_url": "https://arxiv.org/pdf/0912.3044v1"
+  },
+  {
+    "id": "1901.04593v2",
+    "title": "Magnetized interstellar molecular clouds: II. The Large-Scale Structure and Dynamics of Filamentary Molecular Clouds",
+    "authors": [
+      "Pak Shing Li",
+      "Richard I. Klein"
+    ],
+    "abstract": "We perform ideal MHD high resolution AMR simulations with driven turbulence and self-gravity and find that long filamentary molecular clouds are formed at the converging locations of large-scale turbulence flows and the filaments are bounded by gravity. The magnetic field helps shape and reinforce the long filamentary structures. The main filamentary cloud has a length of ~4.4 pc. Instead of a monolithic cylindrical structure, the main cloud is shown to be a collection of fiber/web-like sub-structures similar to filamentary clouds such as L1495. Unless the line-of-sight is close to the mean field direction, the large-scale magnetic field and striations in the simulation are found roughly perpendicular to the long axis of the main cloud, similar to 1495. This provides strong support for a large-scale moderately strong magnetic field surrounding L1495. We find that the projection effect from observations can lead to incorrect interpretations of the true three-dimensional physical shape, size, and velocity structure of the clouds. Helical magnetic field structures found around filamentary clouds that are interpreted from Zeeman observations can be explained by a simple bending of the magnetic field that pierces through the cloud. We demonstrate that two dark clouds form a T-shape configuration which are strikingly similar to the Infrared dark cloud SDC13 leading to the interpretation that SDC13 results from a collision of two long filamentary clouds. We show that a moderately strong magnetic field (M_A ~ 1) is crucial for maintaining a long and slender filamentary cloud for a long period of time ~0.5 million years.",
+    "published": "2019-01-14 22:39:17+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1901.04593v2"
+  },
+  {
+    "id": "1305.4655v3",
+    "title": "Formation of Massive Molecular Cloud Cores by Cloud-cloud Collision",
+    "authors": [
+      "Tsuyoshi Inoue",
+      "Yasuo Fukui"
+    ],
+    "abstract": "Recent observations of molecular clouds around rich massive star clusters including NGC3603, Westerlund 2, and M20 revealed that the formation of massive stars could be triggered by a cloud-cloud collision. By using three-dimensional, isothermal, magnetohydrodynamics simulations with the effect of self-gravity, we demonstrate that massive, gravitationally unstable, molecular cloud cores are formed behind the strong shock waves induced by the cloud-cloud collision. We find that the massive molecular cloud cores have large effective Jeans mass owing to the enhancement of the magnetic field strength by shock compression and turbulence in the compressed layer. Our results predict that massive molecular cloud cores formed by the cloud-cloud collision are filamentary and threaded by magnetic fields perpendicular to the filament.",
+    "published": "2013-05-20 21:00:26+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1305.4655v3"
+  },
+  {
+    "id": "astro-ph/0208245v2",
+    "title": "Can Hydrostatic Cores Form Within Isothermal Molecular Clouds?",
+    "authors": [
+      "Enrique Vazquez-Semadeni",
+      "Mohsen Shadmehri",
+      "Javier Ballesteros-Paredes"
+    ],
+    "abstract": "  Under the assumptions that molecular clouds are nearly spatially and temporally isothermal and that the density peaks (``cores'') within them are formed by turbulent fluctuations, we argue that cores cannot reach a hydrostatic (or magneto-static) state as a consequence of their formation process. In the non-magnetic case, stabilization requires a Bonnor-Ebert truncation at a finite radius, which is not feasible for a single-temperature flow, unless it amounts to a shock, which is clearly a dynamical feature. Instead, in this case, cores must be dynamical entities that can either be pushed into collapse, or else ``rebound'' towards the mean pressure and density as the parent cloud. Nevertheless, rebounding cores are delayed in their re-expansion by their own self-gravity. We give a crude estimate for the re-expansion time as a function of the closeness of the final compression state to the threshold of instability, finding typical values $\\sim 1$ Myr, i.e., of the order of a few free-fall times. Our results support the notion that not all cores observed in molecular clouds need to be on route to forming stars, but that instead a class of ``failed cores'' should exist, which must eventually re-expand and disperse, and which can be identified with observed starless cores. In the magnetic case, recent observational and theoretical work suggests that all cores are critical or supercritical, and are thus qualitatively equivalent to the non-magnetic case. Our results support the notion that the entire star formation process is dynamical, with no intermediate hydrostatic stages.",
+    "published": "2002-08-13 17:22:07+00:00",
+    "pdf_url": "https://arxiv.org/pdf/astro-ph/0208245v2"
+  },
+  {
+    "id": "1402.2614v1",
+    "title": "The formation of filamentary bundles in turbulent molecular clouds",
+    "authors": [
+      "Nickolas Moeckel",
+      "Andreas Burkert"
+    ],
+    "abstract": "The classical picture of a star-forming filament is a near-equilibrium structure, with collapse dependent on its gravitational criticality. Recent observations have complicated this picture, revealing filaments as a mess of apparently interacting subfilaments, with transsonic internal velocity dispersions and mildly supersonic intra-subfilament dispersions. How structures like this form is unresolved. Here we study the velocity structure of filamentary regions in a simulation of a turbulent molecular cloud. We present two main findings: first, the observed complex velocity features in filaments arise naturally in self gravitating hydrodynamic simulations of turbulent clouds without the need for magnetic or other effects. Second, a region that is filamentary only in projection and is in fact made of spatially distinct features can displays these same velocity characteristics. The fact that these disjoint structures can masquerade as coherent filaments in both projection and velocity diagnostics highlights the need to continue developing sophisticated filamentary analysis techniques for star formation observations.",
+    "published": "2014-02-11 20:02:59+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1402.2614v1"
+  },
+  {
+    "id": "1501.04196v1",
+    "title": "Evolution of Prolate Molecular Clouds at Hii Boundaries: II. Formation of BRCs of asymmetrical morphology",
+    "authors": [
+      "T. M. Kinnear",
+      "J. Miao",
+      "G. J. White",
+      "K. Sugitani",
+      "S. Goodwin"
+    ],
+    "abstract": "A systematic investigation on the evolution of a prolate cloud at an Hii boundary is conducted using Smoothed Particle Hydrodynamics (SPH) in order to understand the mechanism for a variety of irregular morphological structures found at the boundaries of various Hii regions. The prolate molecular clouds in this investigation are set with their semi-major axes at inclinations between 0 and 90 degrees to a plane parallel ionizing radiation flux. A set of 4 parameters, the number density n, the ratio of major to minor axis gamma, the inclination angle phi and the incident flux F_EUV, are used to define the initial state of the simulated clouds. The dependence of the evolution of a prolate cloud under Radiation Driven Implosion (RDI) on each of the four parameters is investigated. It is found that: i) in addition to the well studied standard type A, B or C Bright Rimmed Clouds (BRCs), many other types such as asymmetrical BRCs, filamentary structures and irregular horse-head structures could also be developed at Hii boundaries with only simple initial conditions; ii) the final morphological structures are very sensitive to the 4 initial parameters, especially to the initial density and the inclination; iii) The previously defined ionizing radiation penetration depth can still be used as a good indicator of the final morphology. Based on the simulation results, the efficiency of the RDI triggered star formation from clouds of different initial conditions is also estimated. Finally a unified mechanism for the various morphological structures found in many different Hii boundaries is suggested.",
+    "published": "2015-01-17 13:03:58+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1501.04196v1"
+  },
+  {
+    "id": "2405.19720v1",
+    "title": "A study on star formation in rotating and magnetized filamentary molecular clouds",
+    "authors": [
+      "Ashok Mondal"
+    ],
+    "abstract": "A 2D dynamic model is utilized to investigate star formation in rotating filamentary molecular clouds (FMCs) amidst magnetic fields. The study reveals that the emergence of field stars is possible under both weak and strong magnetic fields due to the presence of low-density structures. The presence of a strong rotation in a strongly magnetized FMC Plays a crucial role in forming a combination of two binary pairs and two field stars. An intermediate-density structure in the presence of a moderate magnetic field can form a combination of binary stars and field stars, whereas, in very high dense filamentary molecular clouds, a low magnetic field may help to form binary stars or stellar associations. In a rapidly rotating and weakly magnetized highly dense cloud binary stars are formed, whereas, strong rotation and moderate magnetic field help to form stellar associations",
+    "published": "2024-05-30 06:06:13+00:00",
+    "pdf_url": "https://arxiv.org/pdf/2405.19720v1"
+  },
+  {
+    "id": "1711.06412v1",
+    "title": "New insights in the mid-infrared bubble N49 site: a clue of collision of filamentary molecular clouds",
+    "authors": [
+      "L. K. Dewangan",
+      "D. K. Ojha",
+      "I. Zinchenko"
+    ],
+    "abstract": "We investigate the star formation processes operating in a mid-infrared bubble N49 site, which harbors an O-type star in its interior, an ultracompact HII region, and a 6.7 GHz methanol maser at its edges. The 13CO line data reveal two velocity components (at velocity peaks ~88 and ~95 km/sec) in the direction of the bubble. An elongated filamentary feature (length >15 pc) is investigated in each molecular cloud component, and the bubble is found at the interface of these two filamentary molecular clouds. The Herschel temperature map traces all these structures in a temperature range of ~16-24 K. In the velocity space of 13CO, the two molecular clouds are separated by ~7 km/sec, and are interconnected by a lower intensity intermediate velocity emission (i.e. a broad bridge feature). A possible complementary molecular pair at [87, 88] km/sec and [95, 96] km/sec is also observed in the velocity channel maps. These observational signatures are in agreement with the outcomes of simulations of the cloud-cloud collision process. There are also noticeable embedded protostars and Herschel clumps distributed toward the filamentary features including the intersection zone of the two molecular clouds. In the bubble site, different early evolutionary stages of massive star formation are also present. Together, these observational results suggest that in the bubble N49 site, the collision of the filamentary molecular clouds appears to be operated about 0.7 Myr ago, and may have triggered the formation of embedded protostars and massive stars.",
+    "published": "2017-11-17 05:32:15+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1711.06412v1"
+  },
+  {
+    "id": "0808.3305v2",
+    "title": "Formation and Properties of Molecular Cloud Cores",
+    "authors": [
+      "Sami Dib",
+      "Roberto Galvan-Madrid",
+      "Jongsoo Kim",
+      "Enrique Vazquez-Semadeni"
+    ],
+    "abstract": "  In this paper, we review some of the properties of dense molecular cloud cores. The results presented here rely on three-dimensional numerical simulations of isothermal, magnetized, turbulent, and self-gravitating molecular clouds (MCs) in which dense core form as a consequence of the gravo-turbulent fragmentation of the clouds. In particular we discuss issues related to the mass spectrum of the cores, their lifetimes and their virial balance.",
+    "published": "2008-08-25 14:01:37+00:00",
+    "pdf_url": "https://arxiv.org/pdf/0808.3305v2"
+  },
+  {
+    "id": "1305.5008v1",
+    "title": "Structure and radial equilibrium of filamentary molecular clouds",
+    "authors": [
+      "Yanett Contreras",
+      "Jill Rathborne",
+      "Guido Garay"
+    ],
+    "abstract": "Recent dust continuum surveys have shown that filamentary structures are ubiquitous along the Galactic plane. While the study of their global properties has gained momentum recently, we are still far from fully understanding their origin and stability. Theories invoking magnetic field have been formulated to help explain the stability of filaments; however, observations are needed to test their predictions. In this paper, we investigate the structure and radial equilibrium of five filamentary molecular clouds with the aim of determining the role that magnetic field may play. To do this, we use continuum and molecular line observations to obtain their physical properties (e.g. mass, temperature and pressure). We find that the filaments have lower lineal masses compared to their lineal virial masses. Their virial parameters and shape of their dust continuum emission suggests that these filaments may be confined by a toroidal dominated magnetic field.",
+    "published": "2013-05-22 03:12:33+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1305.5008v1"
+  },
+  {
+    "id": "1007.0625v1",
+    "title": "Non-similar collapse of singular isothermal spherical molecular cloud cores with nonzero initial velocities",
+    "authors": [
+      "Mohsen Nejad-Asghar"
+    ],
+    "abstract": "Theoretically, stars have been formed from the collapse of cores in the molecular clouds. Historically, the core had been assumed as an singular isothermal sphere (SIS), and the collapse had been investigated by a self-similar manner. This is while the rotation and magnetic field lead to non-symmetric collapse so that a spheroid shape may be occurred. Here, the resultant of the centrifugal force and magnetic field gradient is assumed to be in the normal direction of the rotational axis, and its components are supposed to be a fraction $β$ of the local gravitational force. In this research, a collapsing SIS core is considered to find the importance of the parameter $β$ for oblateness of the mass shells which are above the head of the expansion wave. We apply the Adomian decomposition method to solve the system of nonlinear partial differential equations because the collapse does not occur in a spherical symmetry with self-similar behavior. In this way, we obtain a semi-analytical relation for the mass infall rate $\\dot{M}$ of the shells at the envelope. Near the rotational axis, the $\\dot{M}$ decreases with increasing of the non-dimensional radius $ξ$, while a direct relation is observed between $\\dot{M}$ and $ξ$ in the equatorial regions. Also, the values of $\\dot{M}$ in the polar regions are greater than the equatorial values, and this difference is more often at smaller values of $ξ$. Overall, the results show that before reaching the head of expansion wave, the visible shape of the molecular cloud cores can evolve to oblate spheroids. The ratio of major to minor axes of oblate cores increases with increasing the parameter $β$, and its value can approach to the apparently observed elongated shapes of cores in the maps of molecular clouds such as Taurus and Perseus.",
+    "published": "2010-07-05 07:28:15+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1007.0625v1"
+  },
+  {
+    "id": "1801.05955v1",
+    "title": "Filamentary Fragmentation and Accretion in High-Mass Star-Forming Molecular Clouds",
+    "authors": [
+      "Xing Lu",
+      "Qizhou Zhang",
+      "Hauyu Baobab Liu",
+      "Patricio Sanhueza",
+      "Ken'ichi Tatematsu",
+      "Siyi Feng",
+      "Howard A. Smith",
+      "Philip C. Myers",
+      "T. K. Sridharan",
+      "Qiusheng Gu"
+    ],
+    "abstract": "Filamentary structures are ubiquitous in high-mass star-forming molecular clouds. Their relation with high-mass star formation is still to be understood. Here we report interferometric observations toward 8 filamentary high-mass star-forming clouds. A total of 50 dense cores are identified in these clouds, most of which present signatures of high-mass star formation. Five of them are not associated with any star formation indicators, hence are prestellar core candidates. Evolutionary phases of these cores and their linewidths, temperatures, NH$_3$ abundances, and virial parameters are found to be correlated. In a sub-sample of 4 morphologically well-defined filaments, we find that their fragmentation can not be solely explained by thermal or turbulence pressure support. We also investigate distributions of gas temperatures and non-thermal motions along the filaments, and find a spatial correlation between non-thermal linewidths and star formation activities. We find evidence of gas flows along these filaments, and derive an accretion rate along filaments of $\\sim$10$^{-4}$ M$_\\odot$ yr$^{-1}$. These results suggest a strong relationship between massive filaments and high-mass star formation, through i) filamentary fragmentation in very early evolutionary phases to form dense cores, ii) accretion flows along filaments that are important for the growth of dense cores and protostars, and iii) enhancement of non-thermal motion in the filaments by the feedback or accretion during star formation.",
+    "published": "2018-01-18 06:55:32+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1801.05955v1"
+  },
+  {
+    "id": "1501.07734v1",
+    "title": "Structure and Stability of Filamentary Clouds Supported by Lateral Magnetic Field",
+    "authors": [
+      "Tomoyuki Hanawa",
+      "Kohji Tomisaka"
+    ],
+    "abstract": "We have constructed two types of analytical models for an isothermal filamentary cloud supported mainly by magnetic tension. The first one describes an isolated cloud while the second considers filamentary clouds spaced periodically. Both the models assume that the filamentary clouds are highly flattened. The former is proved to be the asymptotic limit of the latter in which each filamentary cloud is much thinner than the distance to the neighboring filaments. We show that these models reproduce main features of the 2D equilibrium model of Tomisaka (2014) for filamentary cloud threaded by perpendicular magnetic field. It is also shown that the critical mass to flux ratio is $ M /Φ= (2 π\\sqrt{G}) ^{-1} $, where $ M $, $ Φ$ and $ G $ denote the cloud mass, the total magnetic flux of the cloud, and the gravitational constant, respectively. This upper bound coincides with that for an axisymmetric cloud supported by poloidal magnetic fields. We applied the variational principle for studying the Jeans instability of the first model. Our model cloud is unstable against fragmentation as well as the filamentary clouds threaded by longitudinal magnetic field. The fastest growing mode has a wavelength several times longer than the cloud diameter. The second model describes quasi-static evolution of filamentary molecular cloud by ambipolar diffusion.",
+    "published": "2015-01-30 11:37:27+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1501.07734v1"
+  },
+  {
+    "id": "1402.3033v1",
+    "title": "Magnetohydrostatic Equilibrium Structure and Mass of Filamentary Isothermal Cloud Threaded by Lateral Magnetic Field",
+    "authors": [
+      "Kohji Tomisaka"
+    ],
+    "abstract": "Herschel observation has recently revealed that interstellar molecular clouds consist of many filaments. Polarization observations in optical and infrared wavelengths indicate that the magnetic field often runs perpendicular to the filament. In this paper, the magnetohydrostatic configuration of isothermal gas is studied, in which the thermal pressure and the Lorentz force are balanced against the self-gravity and the magnetic field is globally perpendicular to the axis of the filament. The model is controlled by three parameters: center-to-surface density ratio (ρ_c/ρ_s), plasma βof surrounding interstellar gas (β_0) and the radius of the hypothetical parent cloud normalized by the scale-height (R'_0), although there remains a freedom how the mass is distributed against the magnetic flux (mass loading). In the case that R'_0 is small enough, the magnetic field plays a role in confining the gas. However, the magnetic field generally has an effect in supporting the cloud. There is a maximum line-mass (mass per unit length) above which the cloud is not supported against the gravity. Compared with the maximum line-mass of non-magnetized cloud (2c_s^2/G, where c_s and G represent respectively the isothermal sound speed and the gravitational constant), that of the magnetized filament is larger than the non-magnetized one. The maximum line-mass is numerically obtained as λ_max \\simeq 0.24 Φ_cl/G^1/2 + 1.66 c_s^2/G, where Φ_cl represents one half of the magnetic flux threading the filament per unit length. The maximum mass of the filamentary cloud is shown to be significantly affected by the magnetic field when the magnetic flux per unit length exceeds Φ_cl \\gtrsim 3 pc μG (c_s/190 m s^-1)^2.",
+    "published": "2014-02-13 05:07:33+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1402.3033v1"
+  },
+  {
+    "id": "1705.09863v1",
+    "title": "Molecular recognition of the environment and mechanisms of the origin of species in quantum-like modeling of evolution",
+    "authors": [
+      "Alexey V. Melkikh",
+      "Alexey V. Melkikh",
+      "Andrei Khrennikov"
+    ],
+    "abstract": "A review of the mechanisms of speciation is performed. The mechanisms of the evolution of species, taking into account the feedback of the state of the environment and mechanisms of the emergence of complexity, are considered. It is shown that these mechanisms, at the molecular level, cannot work steadily in terms of classical mechanics. Quantum mechanisms of changes in the genome, based on the long-range interaction potential between biologically important molecules, are proposed as one of possible explanation. Different variants of interactions of the organism and environment based on molecular recognition and leading to new species origins are considered. Experiments to verify the model are proposed. This bio-physical study is completed by the general operational model of based on quantum information theory. The latter is applied to model epigenetic evolution.",
+    "published": "2017-05-27 20:42:00+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1705.09863v1"
+  },
+  {
+    "id": "2406.08004v2",
+    "title": "Probing the filamentary nature of star formation in the California giant molecular cloud",
+    "authors": [
+      "Guo-Yin Zhang",
+      "Philippe Andre",
+      "Alexander Menshchikov",
+      "Jin-Zeng Li"
+    ],
+    "abstract": "Recent studies suggest that filamentary structures are representative of the initial conditions of star formation in molecular clouds and support a filament paradigm for star formation, potentially accounting for the origin of the stellar initial mass function (IMF). Using Herschel imaging observations of the California giant molecular cloud, we aim to further investigate the filament paradigm for low- to intermediate-mass star formation and to better understand the exact role of filaments in the origin of stellar masses. Using the multiscale, multiwavelength extraction method getsf, we identify starless cores, protostars, and filaments in the Herschel data set and separate these components from the background cloud contribution to determine accurate core and filament properties. Both the prestellar core mass function (CMF) and the distribution of filament masses per unit length or filament line mass function (FLMF) are consistent with power-law distributions at the high-mass end, $ΔN/Δ{\\rm log}M\\propto M^{-1.4 \\pm 0.2}$ at $M > 1\\,M_\\odot$ for the CMF and $ΔN/Δ{\\rm log} {M}_{\\rm line} \\propto {M}_{\\rm line}^{-1.5\\pm0.2}$ for the FLMF at $M_{\\rm line} > 10\\,M_\\odot {\\rm pc^{-1}}$, which are both consistent with the Salpeter power-law IMF. Based on these results, we propose a revised model for the origin of the CMF in filaments, whereby the global prestellar CMF in a molecular cloud arises from the integration of the CMFs generated by individual thermally supercritical filaments within the cloud. Our findings support the existence a tight connection between the FLMF and the CMF/IMF and suggests that filamentary structures represent a critical evolutionary step in establishing a Salpeter-like mass function.",
+    "published": "2024-06-12 08:49:02+00:00",
+    "pdf_url": "https://arxiv.org/pdf/2406.08004v2"
+  },
+  {
+    "id": "1911.05753v2",
+    "title": "The Cloud Factory I: Generating resolved filamentary molecular clouds from galactic-scale forces",
+    "authors": [
+      "Rowan J. Smith",
+      "Robin G. Treß",
+      "Mattia C. Sormani",
+      "Simon C. O. Glover",
+      "Ralf S. Klessen",
+      "Paul C. Clark",
+      "Andrés F. Izquierdo",
+      "Ana Duarte Cabral",
+      "Catherine Zucker"
+    ],
+    "abstract": "We introduce a new suite of simulations, \"The Cloud Factory\", which self-consistently forms molecular cloud complexes at high enough resolution to resolve internal substructure (up to 0.25 Msol in mass) all while including galactic-scale forces. We use a version of the Arepo code modified to include a detailed treatment of the physics of the cold molecular ISM, and an analytical galactic gravitational potential for computational efficiency. The simulations have nested levels of resolution, with the lowest layer tied to tracer particles injected into individual cloud complexes. These tracer refinement regions are embedded in the larger simulation so continue to experience forces from outside the cloud. This allows the simulations to act as a laboratory for testing the effect of galactic environment on star formation. Here we introduce our method and investigate the effect of galactic environment on filamentary clouds. We find that cloud complexes formed after a clustered burst of feedback, have shorter lengths and are less likely to fragment compared to quiescent clouds (e.g. the Musca filament) or those dominated by the galactic potential (e.g. Nessie). Spiral arms and differential rotation preferentially align filaments, but strong feedback randomises them. Long filaments formed within the cloud complexes are necessarily coherent with low internal velocity gradients, which has implications for the formation of filamentary star-clusters. Cloud complexes formed in regions dominated by supernova feedback have fewer star-forming cores, and these are more widely distributed. These differences show galactic-scale forces can have a significant impact on star formation within molecular clouds.",
+    "published": "2019-11-13 19:01:13+00:00",
+    "pdf_url": "https://arxiv.org/pdf/1911.05753v2"
+  },
+  {
+    "id": "astro-ph/0701210v1",
+    "title": "Collapse and Fragmentation of Molecular Cloud Cores. IX. Magnetic Braking of Initially Filamentary Clouds",
+    "authors": [
+      "Alan P. Boss"
+    ],
+    "abstract": "  The collapse and fragmentation of initially filamentary, magnetic molecular clouds is calculated in three dimensions with a gravitational, radiative hydrodynamics code. The code includes magnetic field effects in an approximate manner: magnetic pressure, tension, braking, and ambipolar diffusion are all modelled. Three types of outcomes are observed: direct collapse and fragmentation into a multiple protostar system, periodic contraction and expansion without collapse, or periodic contraction and expansion leading eventually to collapse. While the models begin their evolution at rest except for the assumed solid-body rotation, they develop weakly supersonic velocity fields as a result of the rebounding prior to collapse. The models show that magnetically-supported clouds subject to magnetic braking can undergo dynamic collapse leading to protostellar fragmentation on scales of 10 AU to 100 AU, consistent with typical binary star separations.",
+    "published": "2007-01-08 19:30:20+00:00",
+    "pdf_url": "https://arxiv.org/pdf/astro-ph/0701210v1"
+  },
+  {
+    "id": "0811.3234v1",
+    "title": "On the gravitational content of molecular clouds and their cores",
+    "authors": [
+      "Javier Ballesteros-Paredes",
+      "Gilberto C. Gómez",
+      "Bárbara Pichardo",
+      "Enrique Vázquez-Semadeni"
+    ],
+    "abstract": "  (Abridged) The gravitational term for clouds and cores entering in the virial theorem is usually assumed to be equal to the gravitational energy, since the contribution to the gravitational force from the mass distribution outside the volume of integration is assumed to be negligible. Such approximation may not be valid in the presence of an important external net potential. In the present work we analyze the effect of an external gravitational field on the gravitational budget of a density structure. Our cases under analysis are (a) a giant molecular cloud (GMC) with different aspect ratios embedded within a galactic net potential, and (b) a molecular cloud core embedded within the gravitational potential of its parent molecular cloud. We find that for roundish GMCs, the tidal tearing due to the shear in the plane of the galaxy is compensated by the tidal compression in the z direction. The influence of the external effective potential on the total gravitational budget of these clouds is relatively small, although not necessarily negligible. However, for more filamentary GMCs, the external effective potential can be dominant and can even overwhelm self-gravity, regardless of whether its main effect on the cloud is to disrupt it or compress it. This may explain the presence of some GMCs with few or no signs of massive star formation, such as the Taurus or the Maddalena's clouds. In the case of dense cores embedded in their parent molecular cloud, we found that the gravitational content due to the external field may be more important than the gravitational energy of the cores themselves. This effect works in the same direction as the gravitational energy, i.e., favoring the collapse of cores. We speculate on the implications of these results for star formation models.",
+    "published": "2008-11-19 22:37:38+00:00",
+    "pdf_url": "https://arxiv.org/pdf/0811.3234v1"
+  }
+]
