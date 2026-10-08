@@ -26,6 +26,8 @@ source .venv/bin/activate
 Install all required packages:
 ```bash
 pip install -r requirements.txt
+pip install python-dotenv
+
 
 ```
 ### Step 6: Launch Jupyter Notebook
@@ -48,6 +50,7 @@ git pull origin assignment3
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+pip install python-dotenv
 jupyter notebook
 ```
 
