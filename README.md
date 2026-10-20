@@ -61,5 +61,5 @@ jupyter notebook
 - The virtual environment (`.venv`) isolates project dependencies
 - Your Jupyter notebook will open in your default browser (usually at `http://localhost:8888`)
 - This README.MD file was generated using Claude AI Sonnet 5.5 for formatting purposes and organization given the inputted Quick Start Commands
-
+- This contains all arxiv,notebook and simbad libraries necessary
   ## SOURCES
