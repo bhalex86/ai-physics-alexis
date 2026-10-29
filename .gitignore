@@ -1,0 +1,48 @@
+# --- Simulation data: large, and downloadable from the CATS archive (see README section 9)
+*.fits
+*.fits.gz
+*.hdf5
+*.h5
+b1p1/
+b1p.01/
+b.1p1/
+b.1p.01/
+arepo_*/
+
+# --- Generated: rebuilt by make_sample_data.py, build_db.py, rotate_maps.py
+sample_project/
+*.db
+
+# --- Private: never commit
+# verification signing key (normally in your home folder, but just in case)
+.cats_mcp_key
+# tool-call log; contains local paths
+audit_log.jsonl
+# answer key for scoring Claude
+planted_failures.json
+# API keys (Week 8 eval_harness)
+.env
+
+# --- Python, Jupyter, macOS
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+
+*.fits
+*.fits.gz
+*.hdf5
+*.h5
+*.db
+.cats_mcp_key
+audit_log.jsonl
+planted_failures.json
+.env
+.venv/
+venv/
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store

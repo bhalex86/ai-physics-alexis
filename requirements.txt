@@ -1,0 +1,23 @@
+# Everything this project imports. Tested with Python 3.13.
+#   pip install -r requirements.txt
+
+# MCP server (mcp_server_alexis.py). mcp is the 2.x series: its server API differs from 1.x.
+mcp>=2.3,<3
+pydantic>=2.7
+numpy>=2.0
+scipy>=1.13
+astropy>=6.0
+pandas>=2.2
+certifi>=2024.2
+
+# tests (test_mcp_server_alexis.py, test_evaluate.py)
+pytest>=8.0
+jsonschema>=4.20
+
+# analysis pipeline: AREPO HDF5 files (prepare_arepo.py, check_arepo.py)
+h5py>=3.10
+# the comparison PDF (make_comparison_pdf.py)
+reportlab>=4.0
+
+# running the analysis notebook
+jupyter
