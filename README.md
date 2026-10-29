@@ -1,5 +1,5 @@
 # cats-tilt: an MCP server for magnetic-field tilt from dust polarization
-
+This along with most of the code was generated using Claude Opus 5.5 . Please note that the data files were used from a local folder
 `mcp_server_alexis.py` lets an LLM client such as Claude Desktop estimate how far a cloud's magnetic field is tilted out of the plane of the sky. It uses the dust-polarization method of Chen et al. (2019, MNRAS 485, 3499) on public MHD simulations from the CATS archive (Burkhart et al. 2020, ApJ 905, 14).
 
 The server does the physics; the LLM calls the tools, can read the code behind them, and reports what they return. Every reply carries a **verification ID** that you can check independently with `verify.py`.
