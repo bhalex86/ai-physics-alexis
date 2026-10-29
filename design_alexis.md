@@ -7,7 +7,7 @@
 | | `cats_catalog` | `estimate_tilt_from_cubes` |
 |---|---|---|
 | **Purpose** | List what exists in the public CATS archive (runs, snapshots, files) before downloading. | Estimate the field tilt γ from simulation cubes with Chen et al. (2019)'s method, with the true tilt, an uncertainty and a comparison with Chen. |
-| **(d) Data source** | **External API:** the CATS archive (Burkhart et al. 2020, ApJ 905, 14), HTTPS directory listings at `users.flatironinstitute.org/~bburkhart/data/CATS/`. | **Dataset:** CATS simulation cubes (Cho-ENO FITS; AREPO HDF5 regridded to FITS) read from disk; `results.db` (SQLite, this project's graded results) for the calibration part of the uncertainty. |
+| **(d) Data source** | **External API:** the CATS archive (Burkhart et al. 2020, ApJ 905, 14), HTTPS directory listings at [`users.flatironinstitute.org/~bburkhart/data/CATS/`](https://www.mhdturbulence.com/) . | **Dataset:** CATS simulation cubes (Cho-ENO FITS; AREPO HDF5 regridded to FITS) read from disk; `results.db` (SQLite, this project's graded results) for the calibration part of the uncertainty. |
 
 Eleven supporting endpoints share the same conventions: `inspect_fits`, `estimate_tilt_from_stokes`, `list_runs`, `run_properties`, `load_cube`, `make_map`, `estimate_tilt`, `lookup_result`, `grade_run`, `get_call_log`, and `read_source`, which lets the LLM read the physics code and the Chen equation each function implements.
 
