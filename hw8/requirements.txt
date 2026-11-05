@@ -8,6 +8,7 @@ numpy>=2.0
 scipy>=1.13
 astropy>=6.0
 pandas>=2.2
+matplotlib>=3.8
 certifi>=2024.2
 
 # tests (test_mcp_server_alexis.py, test_evaluate.py)
