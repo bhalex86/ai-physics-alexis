@@ -1,19 +1,19 @@
 digraph architecture {
-  graph [rankdir=TB, fontname="Helvetica", fontsize=22, labelloc=t, nodesep=0.45, ranksep=0.55,
+  graph [rankdir=TB, fontname="Helvetica", fontsize=30, labelloc=t, nodesep=0.45, ranksep=0.55,
          newrank=true, pad=0.3,
-         label="Project architecture: Chen et al. (2019) tilt estimator on CATS simulations, queried by Claude through an MCP server\nBianca Alexis, PHYS 7440\n\n"];
-  node  [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=13, color="#52606d",
+         label="Project architecture: Chen et al. (2019) tilt estimator on CATS simulations,\nqueried by Claude through an MCP server\nBianca Alexis, PHYS 7440\n\n"];
+  node  [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=19, color="#52606d",
          fillcolor="#ffffff", margin="0.18,0.10"];
-  edge  [fontname="Helvetica", fontsize=11.5, color="#52606d", fontcolor="#1f2933"];
+  edge  [fontname="Helvetica", fontsize=17, color="#52606d", fontcolor="#1f2933"];
 
   subgraph cluster_src {
-    label="1  DATA SOURCES"; style="rounded,filled"; fillcolor="#eef2f7"; color="#9aa5b1"; fontsize=14;
-    cats [label="CATS archive (HTTPS)\nBurkhart et al. 2020, doi:10.3847/1538-4357/abc484\nCho-ENO: FITS, 256³ (ρ, B, v), no gravity\nAREPO: HDF5, 512³, gravity on"];
+    label="1  DATA SOURCES"; style="rounded,filled"; fillcolor="#eef2f7"; color="#9aa5b1"; fontsize=20;
+    cats [label="CATS archive (HTTPS)\nBurkhart et al. 2020\ndoi:10.3847/1538-4357/abc484\nCho-ENO: FITS, 256³ (ρ, B, v), no gravity\nAREPO: HDF5, 512³, gravity on"];
     chen [label="Chen et al. 2019, MNRAS 485, 3499\ndoi:10.1093/mnras/stz618\neqs. 7–10 and Table A1"];
   }
 
   subgraph cluster_pre {
-    label="2  PREPROCESSING AND PHYSICS (plain Python, no AI)"; style="rounded,filled"; fillcolor="#f5f7fa"; color="#9aa5b1"; fontsize=14;
+    label="2  PREPROCESSING AND PHYSICS (plain Python, no AI)"; style="rounded,filled"; fillcolor="#f5f7fa"; color="#9aa5b1"; fontsize=20;
     prep  [label="prepare_arepo.py\nHDF5 → FITS, 512³ → 256³\nlabels checked with ∇·B"];
     load  [label="firstmap_b.load_cubes\ndensity ρ, field B (and velocity v)\nmeasure_turbulence: dB/B₀, M_s, M_A"];
     rot   [label="rotate_maps.rotated_maps\nview at tilts 0–90°\nStokes Q, U and p maps (p₀ = 0.15)"];
@@ -22,31 +22,31 @@ digraph architecture {
   }
 
   subgraph cluster_store {
-    label="3  STORED DATA"; style="rounded,filled"; fillcolor="#eef2f7"; color="#9aa5b1"; fontsize=14;
+    label="3  STORED DATA"; style="rounded,filled"; fillcolor="#eef2f7"; color="#9aa5b1"; fontsize=20;
     reg [label="runs.json\napproved runs, incl. one\nplanted missing run"];
     db  [label="results.db (SQLite, read-only)\nbuilt by build_db.py: results +\nturbulence table (M_s, M_A)\nincl. one planted bad number"];
   }
 
   subgraph cluster_mcp {
-    label="4  MCP SERVER (read-only, stdio)"; style="rounded,filled"; fillcolor="#e8f3ee"; color="#7bb59a"; fontsize=14;
-    mcp   [label="mcp_server_alexis.py: 13 tools\nlist_runs · load_cube · make_map · estimate_tilt · lookup_result\ngrade_run · cats_catalog (external API) · read_source · …\nchecks inputs (approved runs, 0–90°, allowed folders)\nsigns every result with a verification_id",
+    label="4  MCP SERVER (read-only, stdio)"; style="rounded,filled"; fillcolor="#e8f3ee"; color="#7bb59a"; fontsize=20;
+    mcp   [label="mcp_server_alexis.py: 13 tools\nlist_runs · load_cube · make_map\nestimate_tilt · lookup_result · grade_run\ncats_catalog (external API) · read_source · …\nchecks inputs (approved runs,\n0–90°, allowed folders)\nsigns every result with a verification_id",
            color="#067647", penwidth=2.2];
     audit [label="audit_log.jsonl\nsigned record of\nevery tool call"];
   }
 
   subgraph cluster_ai {
-    label="5  AI COMPONENT"; style="rounded,filled"; fillcolor="#fdf2e9"; color="#e0a46b"; fontsize=14;
+    label="5  AI COMPONENT"; style="rounded,filled"; fillcolor="#fdf2e9"; color="#e0a46b"; fontsize=20;
     q      [label="Question\n(fixed question set,\neach asked 3 times)", shape=note, fillcolor="#fffbea"];
-    claude [label="Claude Sonnet 5.5\nClaude Desktop, or eval_harness.py --mode llm\nchooses tool calls; does no physics itself",
+    claude [label="Claude (AI agent)\nClaude Desktop, or\neval_harness.py --mode llm\nchooses tool calls;\ndoes no physics itself",
             color="#b54708", penwidth=2.2];
     ans    [label="Answer\nvalue + unit, verification IDs,\nwarnings or \"not available\"", shape=note, fillcolor="#fffbea"];
   }
 
   subgraph cluster_eval {
-    label="6  EVALUATION"; style="rounded,filled"; fillcolor="#f3eefc"; color="#9b8ac4"; fontsize=14;
+    label="6  EVALUATION"; style="rounded,filled"; fillcolor="#f3eefc"; color="#9b8ac4"; fontsize=20;
     key  [label="make_ground_truth.py (no LLM)\n→ ground_truth_alexis.json\nreference values, units, tolerances"];
     base [label="baseline_alexis.ipynb\nprior-only answerer:\n30° isotropic prior, no tools"];
-    harn [label="eval_harness.py: score_item + within_tolerance\nMETRIC: pass rate (% of trials), angles within ±0.5°\nalso MAE (deg) and fabricated answers\nSUCCESS: pass rate ≥ 95 % and 0 fabrications",
+    harn [label="eval_harness.py\nscore_item + within_tolerance\nMETRIC: pass rate (% of trials),\nangles within ±0.5°\nalso MAE (deg), fabricated answers\nSUCCESS: pass rate ≥ 95 %\nand 0 fabrications",
           color="#5b3fa8", penwidth=2.2];
     ver  [label="verify.py\nchecks every verification ID\nagainst the audit log"];
     res  [label="Evaluated output\nagent vs baseline,\nscored against the answer key", shape=doubleoctagon];
