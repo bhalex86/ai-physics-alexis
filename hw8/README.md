@@ -31,7 +31,7 @@ pip install -r requirements.txt
 jupyter notebook baseline_alexis.ipynb      # then Kernel → Restart & Run All
 ```
 
-The simulation cubes are not needed: without them the notebook uses the saved `ground_truth_alexis.json`. With the CATS cubes and `runs.json` in a project folder, `make_ground_truth.py --project <folder>` rebuilds the answer key (a few minutes to an hour per run).
+Tested on a fresh clone of this branch after `pip install -r requirements.txt`: the notebook runs end to end with 0 errors. The simulation cubes are not needed: without them the notebook uses the saved `ground_truth_alexis.json`. With the CATS cubes and `runs.json` in a project folder, `make_ground_truth.py --project <folder>` rebuilds the answer key (a few minutes to an hour per run).
 
 ## Connecting the MCP server to Claude Desktop
 

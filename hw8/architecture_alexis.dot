@@ -13,12 +13,12 @@ digraph architecture {
   }
 
   subgraph cluster_pre {
-    label="2  PREPROCESSING AND PHYSICS (plain Python, no AI)"; style="rounded,filled"; fillcolor="#f5f7fa"; color="#9aa5b1"; fontsize=20;
+    label="2  PREPROCESSING AND PHYSICS (plain Python, no AI)  ·  evaluation level 1: estimator vs true tilt"; style="rounded,filled"; fillcolor="#f5f7fa"; color="#9aa5b1"; fontsize=20;
     prep  [label="prepare_arepo.py\nHDF5 → FITS, 512³ → 256³\nlabels checked with ∇·B"];
     load  [label="firstmap_b.load_cubes\ndensity ρ, field B (and velocity v)\nmeasure_turbulence: dB/B₀, M_s, M_A"];
     rot   [label="rotate_maps.rotated_maps\nview at tilts 0–90°\nStokes Q, U and p maps (p₀ = 0.15)"];
     est   [label="Chen estimator\np₀ from p_max (eq. 9), γ per pixel (eq. 10)\nKDE peak, all pixels and low-S"];
-    grade [label="evaluate.py\nmedian |err| < 15° and slope > 0.5\n(true tilts 30–60°)"];
+    grade [label="evaluate.py (level 1)\nmedian |err| < 15° and slope > 0.5\n(true tilts 30–60°)"];
   }
 
   subgraph cluster_store {
@@ -43,10 +43,10 @@ digraph architecture {
   }
 
   subgraph cluster_eval {
-    label="6  EVALUATION"; style="rounded,filled"; fillcolor="#f3eefc"; color="#9b8ac4"; fontsize=20;
+    label="6  EVALUATION level 2: Claude vs answer key (agent fidelity)"; style="rounded,filled"; fillcolor="#f3eefc"; color="#9b8ac4"; fontsize=20;
     key  [label="make_ground_truth.py (no LLM)\n→ ground_truth_alexis.json\nreference values, units, tolerances"];
     base [label="baseline_alexis.ipynb\nprior-only answerer:\n30° isotropic prior, no tools"];
-    harn [label="eval_harness.py\nscore_item + within_tolerance\nMETRIC: pass rate (% of trials),\nangles within ±0.5°\nalso MAE (deg), fabricated answers\nSUCCESS: pass rate ≥ 95 %\nand 0 fabrications",
+    harn [label="eval_harness.py\nscore_item + within_tolerance\nMETRIC: pass rate (% of trials),\nangles within ±0.5°\nalso MAE (deg), fabricated answers\nSUCCESS: pass rate ≥ 95 %,\nMAE < 0.5°, 0 fabrications",
           color="#5b3fa8", penwidth=2.2];
     ver  [label="verify.py\nchecks every verification ID\nagainst the audit log"];
     res  [label="Evaluated output\nagent vs baseline,\nscored against the answer key", shape=doubleoctagon];
