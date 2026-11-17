@@ -1,0 +1,62 @@
+<comment>
+problem   = MHD turbulence, uniform B0 along x1
+configure = --prob=turb -b --eos=isothermal --flux=hlld -fft -hdf5
+
+<job>
+problem_id = Turb
+
+<output1>
+file_type = hst
+dt        = 0.01
+
+<output2>
+file_type = hdf5
+variable  = prim
+dt        = 0.1
+
+<time>
+cfl_number = 0.3
+nlim       = 1000000
+tlim = 5.0
+integrator = vl2
+xorder     = 2
+ncycle_out = 10
+
+<mesh>
+nx1 = 64
+x1min = -0.5
+x1max = 0.5
+ix1_bc = periodic
+ox1_bc = periodic
+nx2 = 64
+x2min = -0.5
+x2max = 0.5
+ix2_bc = periodic
+ox2_bc = periodic
+nx3 = 64
+x3min = -0.5
+x3max = 0.5
+ix3_bc = periodic
+ox3_bc = periodic
+
+<meshblock>
+nx1 = 64
+nx2 = 64
+nx3 = 64
+
+<hydro>
+iso_sound_speed = 1.0
+
+<problem>
+b0 = 2.0
+
+<turbulence>
+turb_flag = 2
+dedt      = 0.5
+nlow      = 1
+nhigh     = 4
+expo      = 2.0
+tcorr     = 0.1
+dtdrive   = 0.1
+f_shear   = 0.5
+rseed     = 1234

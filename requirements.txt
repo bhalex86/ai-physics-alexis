@@ -1,4 +1,4 @@
-# Everything this project imports. Tested with Python 3.13.
+# Everything this project imports. Tested with Python 3.10, 3.13 and 3.14.
 #   pip install -r requirements.txt
 
 # MCP server (mcp_server_alexis.py). mcp is the 2.x series: its server API differs from 1.x.
@@ -21,3 +21,8 @@ reportlab>=4.0
 
 # running the analysis notebook
 jupyter
+# --- added for HW9 (data_pipeline_alexis.py) ---
+tenacity>=8.2          # retries with exponential backoff
+requests>=2.31         # HTTP
+python-dotenv>=1.0     # optional: GITHUB_TOKEN from .env
+matplotlib>=3.8        # lab notebook plot

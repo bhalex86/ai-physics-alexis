@@ -1,0 +1,26 @@
+diff --git a/src/pgen/turb.cpp b/src/pgen/turb.cpp
+index 6c873645..53963736 100644
+--- a/src/pgen/turb.cpp
++++ b/src/pgen/turb.cpp
+@@ -50,6 +50,21 @@ void Mesh::InitUserMeshData(ParameterInput *pin) {
+ //========================================================================================
+ 
+ void MeshBlock::ProblemGenerator(ParameterInput *pin) {
++  if (MAGNETIC_FIELDS_ENABLED) {
++    Real b0 = pin->GetReal("problem", "b0");
++    for (int k=ks; k<=ke; ++k)
++      for (int j=js; j<=je; ++j)
++        for (int i=is; i<=ie+1; ++i)
++          pfield->b.x1f(k,j,i) = b0;
++    for (int k=ks; k<=ke; ++k)
++      for (int j=js; j<=je+1; ++j)
++        for (int i=is; i<=ie; ++i)
++          pfield->b.x2f(k,j,i) = 0.0;
++    for (int k=ks; k<=ke+1; ++k)
++      for (int j=js; j<=je; ++j)
++        for (int i=is; i<=ie; ++i)
++          pfield->b.x3f(k,j,i) = 0.0;
++  }
+   for (int k=ks; k<=ke; k++) {
+     for (int j=js; j<=je; j++) {
+       for (int i=is; i<=ie; i++) {

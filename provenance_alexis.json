@@ -1,0 +1,895 @@
+{
+  "api_calls": {
+    "github_commit": {
+      "access_time_utc": "2026-11-17T01:18:54Z",
+      "commit_date": "2026-11-12T17:29:36Z",
+      "commit_message": "Declare HDF5 reader functions only when HDF5 is enabled",
+      "commit_sha": "1395e2f543f4368d448cb1a2cf92ba1f910e3416",
+      "sha256": "3e4a0b8af7b5db83ca8b00221e77f69f8e7493ede025b3c808e639c8b843fd0a",
+      "status": "ok",
+      "url": "https://api.github.com/repos/PrincetonUniversity/athena/commits/1395e2f543f4368d448cb1a2cf92ba1f910e3416"
+    }
+  },
+  "cache": {
+    "canonical_content_sha256": "8f9c8db5ef125f77892acbd5f0b01b5c7366fd3175793d7a067c84a31a8a8a10",
+    "database": "cache/pipeline_cache_alexis.db",
+    "db_file_sha256_informational": "a1607183b6e30655738fb548af80bac1d459f6da1f3b302a40e0486ca79bb465",
+    "hash_definition": "sha256 over the schema text and every row of tables datasets and estimates (sorted, JSON, floats rounded to 6 decimals); no timestamps; maps table excluded",
+    "n_datasets": 5,
+    "previous_canonical_content_sha256": "8f9c8db5ef125f77892acbd5f0b01b5c7366fd3175793d7a067c84a31a8a8a10",
+    "reproduces_previous_build": true,
+    "results_csv_for_build_db": "cache/results_rotated.csv",
+    "statuses": {
+      "athenapp:1395e2f:Turb.out2.00050": "ok",
+      "cho:b.1p.01:t750": "ok",
+      "cho:b.1p1:t900": "ok",
+      "cho:b1p.01:t900": "ok",
+      "cho:b1p1:t900": "ok"
+    }
+  },
+  "citations": [
+    "Burkhart, B. et al. 2020, ApJ 905, 14 (CATS), doi:10.3847/1538-4357/abc484",
+    "Cho, J. & Lazarian, A. 2003, MNRAS 345, 325",
+    "Burkhart, B. et al. 2009, ApJ 693, 250",
+    "Portillo, S. K. N. et al. 2018, ApJ 862, 119",
+    "Bialy, S. & Burkhart, B. 2020, ApJ 894, L2",
+    "Stone, J. M. et al. 2020, ApJS 249, 4 (Athena++)",
+    "Chen, C.-Y. et al. 2019, MNRAS 485, 3499, doi:10.1093/mnras/stz618"
+  ],
+  "constants": {
+    "alfven_speed_convention": {
+      "athenapp": "v_A = B / sqrt(rho): code units with mu = 1 (no 4 pi), Stone et al. 2020",
+      "cats_cho_eno": "not computed: no velocity cubes and field units not specified"
+    },
+    "float_decimals_in_cache": 6,
+    "intrinsic_polarization_p0": 0.15,
+    "pmax_rules": {
+      "max": 100.0,
+      "p99.5": 99.5
+    },
+    "sentinels": {
+      "count": -1,
+      "float": "NaN (stored as SQL NULL)",
+      "string": "UNKNOWN"
+    },
+    "viewing_angles_deg": [
+      0,
+      15,
+      30,
+      45,
+      60,
+      75,
+      90
+    ]
+  },
+  "datasets": {
+    "athenapp:1395e2f:Turb.out2.00050": {
+      "files": {
+        "athdf": {
+          "access_time_utc": null,
+          "acquired_by": "local output of my own Athena++ run (upstream artifact identified by SHA-256; the simulation is reproducible to tolerance only)",
+          "bytes": 7348211,
+          "ingested_time_utc": "2026-11-17T18:28:05Z",
+          "local_file_modified_utc": "2026-11-17T01:15:40Z",
+          "path": "data/athena/Turb.out2.00050.athdf",
+          "sha256": "e8a07711fd61b77fc2ec898499e53d4bb3e37f5bb4cdb0aec880694790e3748f",
+          "sha256_matches_previous_record": true,
+          "sha256_matches_recorded_run": true,
+          "url": "https://github.com/PrincetonUniversity/athena/tree/1395e2f543f4368d448cb1a2cf92ba1f910e3416"
+        }
+      },
+      "run_metadata": {
+        "code": "Athena++ (PrincetonUniversity/athena)",
+        "configure": "python3 configure.py --prob=turb -b --eos=isothermal --flux=hlld -fft -hdf5 --cxx=clang++-apple --include=$HOME/miniforge3/include --lib_path=$HOME/miniforge3/lib --cflag=-Wl,-rpath,$HOME/miniforge3/lib",
+        "conventions": "rho=1, mu=1 so v_A=b0; M_A=v_rms/b0 with 3D rms speed over the box",
+        "git_sha": "1395e2f543f4368d448cb1a2cf92ba1f910e3416",
+        "input_file": "athinput.turb_mhd_64",
+        "input_sha256": "d6cc86357c4e9a9f965dbfde03da6d6abd5d0e4c8656d6824dc5cf4a9367d857",
+        "key_parameters": {
+          "b0": 2.0,
+          "dedt": 0.5,
+          "grid": "64^3",
+          "iso_sound_speed": 1.0,
+          "nhigh": 4,
+          "nlow": 1,
+          "rseed": 1234,
+          "tlim": 5.0,
+          "turb_flag": 2
+        },
+        "machine": {
+          "arch": "arm64",
+          "compiler": "Apple clang version 17.0.0 (clang-1700.6.4.2)",
+          "fftw_hdf5": "fftw                       3.3.11           nompi_haf1500d_100  conda-forge\nhdf5                       2.2.0            nompi_h1e41424_102  conda-forge",
+          "numpy": "2.5.4",
+          "os": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+          "python": "3.14.7"
+        },
+        "outputs": {
+          "final_file": "run_64/Turb.out2.00050.athdf",
+          "final_file_sha256": "e8a07711fd61b77fc2ec898499e53d4bb3e37f5bb4cdb0aec880694790e3748f",
+          "hdf5_precision": "single",
+          "n_athdf": 51,
+          "reproducibility_note": "outputs depend on compiler/CPU; not bit-identical across machines"
+        },
+        "patch_file": "turb_mhd.patch",
+        "patch_sha256": "6a448f74e3179d12186d247b5ca18dcf4e247d00a75f550fa48c81d6ce200d60",
+        "regime_t_ge_2": {
+          "M_A_max": 0.431539922952652,
+          "M_A_mean": 0.4130953252315521,
+          "M_A_min": 0.3984909653663635,
+          "dB_over_B0_mean": 0.22069783508777618,
+          "n_snapshots": 31
+        },
+        "source": "athena++_own_run"
+      },
+      "snapshot_time_code_units": 5.0,
+      "source_urls": [
+        "https://github.com/PrincetonUniversity/athena/tree/1395e2f543f4368d448cb1a2cf92ba1f910e3416",
+        "https://api.github.com/repos/PrincetonUniversity/athena/commits/1395e2f543f4368d448cb1a2cf92ba1f910e3416"
+      ],
+      "transformations": [
+        "rho normalised to <rho> = 1; B normalised to |<B>| (tilt is unit-free)",
+        "dB/B0 = rms(B - <B>) / |<B>| over the full cube",
+        "tilted line of sight: rotate_maps.rotated_maps (trilinear sampling, periodic wrap) at angles 0,15,30,45,60,75,90",
+        "Stokes Q, U, polarization fraction p with intrinsic p0 = 0.15 (Chen et al. 2019, eqs. 1-3)",
+        "p0 derived from p_max (eq. 9) with p_max = map maximum ('max') or 99.5th percentile",
+        "tilt inversion gamma = arccos(sqrt(cos^2 gamma)) from p (eq. 10)",
+        "S cut: pixels with dispersion S below the median S ('low-S'); outer pixel ring masked",
+        "KDE peak (Gaussian, Scott's rule) on a 0-90 degree grid",
+        "read .athdf with h5py: prim (rho, vel1-3) and B (Bcc1-3) datasets, single-level mesh",
+        "M_s = v_rms / iso_sound_speed; M_A = v_rms / (|<B>| / sqrt(<rho>))  [mu = 1 units]"
+      ],
+      "version": {
+        "athenapp_commit": "1395e2f543f4368d448cb1a2cf92ba1f910e3416",
+        "file_sha256": "e8a07711fd61b77fc2ec898499e53d4bb3e37f5bb4cdb0aec880694790e3748f",
+        "github_commit_record_status": "ok"
+      }
+    },
+    "cho:b.1p.01:t750": {
+      "files": {
+        "bx": {
+          "access_time_utc": "2026-11-17T01:18:13Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 61760198,
+          "http_headers": {
+            "Content-Length": "61760198",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:11 GMT",
+            "ETag": "\"5a023616-3ae62c6\"",
+            "Last-Modified": "Tue, 07 Nov 2017 22:39:18 GMT",
+            "Server": "nginx"
+          },
+          "path": "b.1p.01/magx_t750.fits.gz",
+          "sha256": "b809f6cd094ab7ad074a3c8dc228c0749cc19bafe253988bfe41034ac586bf71",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/magx_t750.fits.gz"
+        },
+        "by": {
+          "access_time_utc": "2026-11-17T01:18:15Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 61935497,
+          "http_headers": {
+            "Content-Length": "61935497",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:13 GMT",
+            "ETag": "\"5a02361b-3b10f89\"",
+            "Last-Modified": "Tue, 07 Nov 2017 22:39:23 GMT",
+            "Server": "nginx"
+          },
+          "path": "b.1p.01/magy_t750.fits.gz",
+          "sha256": "04d515a2a6af7c3212833a7c8c8435d509baaf0dc04fc810bf0b0f66f9f430ec",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/magy_t750.fits.gz"
+        },
+        "bz": {
+          "access_time_utc": "2026-11-17T01:18:17Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 62061948,
+          "http_headers": {
+            "Content-Length": "62061948",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:15 GMT",
+            "ETag": "\"5a023620-3b2fd7c\"",
+            "Last-Modified": "Tue, 07 Nov 2017 22:39:28 GMT",
+            "Server": "nginx"
+          },
+          "path": "b.1p.01/magz_t750.fits.gz",
+          "sha256": "e7fe99fb751cf7c7fa611aa46f6aeba8e40f267e38774e3ff68dee541ffe1174",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/magz_t750.fits.gz"
+        },
+        "rho": {
+          "access_time_utc": "2026-11-17T01:18:10Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 67112640,
+          "http_headers": {
+            "Content-Length": "67112640",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:08 GMT",
+            "ETag": "\"5a0237ef-4000ec0\"",
+            "Last-Modified": "Tue, 07 Nov 2017 22:47:11 GMT",
+            "Server": "nginx"
+          },
+          "path": "b.1p.01/dens_t750.fits",
+          "sha256": "3833ed92b893511642d71c13076a9e9431e73dde5b0dcf1f4b64710aa5ef47a7",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/dens_t750.fits"
+        }
+      },
+      "fits_header_rho": "SIMPLE  =                    T / Written by IDL:  Tue Nov  7 17:38:55 2017      \nBITPIX  =                  -32 / Number of bits per data pixel                  \nNAXIS   =                    3 / Number of data axes                            \nNAXIS1  =                  256 /                                                \nNAXIS2  =                  256 /                                                \nNAXIS3  =                  256 /                                                \nEXTEND  =                    T / FITS data may contain extensions               \nDATE    = '2017-11-07'         / Creation UTC (CCCC-MM-DD) date of FITS header  \nCOMMENT FITS (Flexible Image Transport System) format is defined in 'Astronomy  \nCOMMENT and Astrophysics', volume 376, page 359; bibcode 2001A&A...376..359H    \nEND                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ",
+      "source_urls": [
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/dens_t750.fits",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/magx_t750.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/magy_t750.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/magz_t750.fits.gz"
+      ],
+      "transformations": [
+        "rho normalised to <rho> = 1; B normalised to |<B>| (tilt is unit-free)",
+        "dB/B0 = rms(B - <B>) / |<B>| over the full cube",
+        "tilted line of sight: rotate_maps.rotated_maps (trilinear sampling, periodic wrap) at angles 0,15,30,45,60,75,90",
+        "Stokes Q, U, polarization fraction p with intrinsic p0 = 0.15 (Chen et al. 2019, eqs. 1-3)",
+        "p0 derived from p_max (eq. 9) with p_max = map maximum ('max') or 99.5th percentile",
+        "tilt inversion gamma = arccos(sqrt(cos^2 gamma)) from p (eq. 10)",
+        "S cut: pixels with dispersion S below the median S ('low-S'); outer pixel ring masked",
+        "KDE peak (Gaussian, Scott's rule) on a 0-90 degree grid"
+      ],
+      "version": "no version number published by CATS; file SHA-256 used as version"
+    },
+    "cho:b.1p1:t900": {
+      "files": {
+        "bx": {
+          "access_time_utc": "2026-11-17T01:18:23Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 62137384,
+          "http_headers": {
+            "Content-Length": "62137384",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:20 GMT",
+            "ETag": "\"5a024d16-3b42428\"",
+            "Last-Modified": "Wed, 08 Nov 2017 00:17:26 GMT",
+            "Server": "nginx"
+          },
+          "path": "b.1p1/magx_t900.fits.gz",
+          "sha256": "7e60c6ce9a2d25b1189c3bdb72b0f51de586ac3a0d14697da226472ed9d65e02",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/magx_t900.fits.gz"
+        },
+        "by": {
+          "access_time_utc": "2026-11-17T01:18:26Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 62299059,
+          "http_headers": {
+            "Content-Length": "62299059",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:23 GMT",
+            "ETag": "\"5a024d1b-3b69bb3\"",
+            "Last-Modified": "Wed, 08 Nov 2017 00:17:31 GMT",
+            "Server": "nginx"
+          },
+          "path": "b.1p1/magy_t900.fits.gz",
+          "sha256": "e5950546c0fcb63414aa7bf150b0724135f377a619f1d914f8efcd54d98ff49d",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/magy_t900.fits.gz"
+        },
+        "bz": {
+          "access_time_utc": "2026-11-17T01:18:28Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 62291322,
+          "http_headers": {
+            "Content-Length": "62291322",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:26 GMT",
+            "ETag": "\"5a024d21-3b67d7a\"",
+            "Last-Modified": "Wed, 08 Nov 2017 00:17:37 GMT",
+            "Server": "nginx"
+          },
+          "path": "b.1p1/magz_t900.fits.gz",
+          "sha256": "6dcb030e21db75a101398c253e86c6d3877eef9e9f2ebe440b94db1068536680",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/magz_t900.fits.gz"
+        },
+        "rho": {
+          "access_time_utc": "2026-11-17T01:18:19Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 57063779,
+          "http_headers": {
+            "Content-Length": "57063779",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:17 GMT",
+            "ETag": "\"5a024d00-366b963\"",
+            "Last-Modified": "Wed, 08 Nov 2017 00:17:04 GMT",
+            "Server": "nginx"
+          },
+          "path": "b.1p1/dens_t900.fits.gz",
+          "sha256": "db5e01bd61032960007a31e64d259158cf3a3c5d615dcf8dcdea0f9d2a1a9222",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/dens_t900.fits.gz"
+        }
+      },
+      "fits_header_rho": "SIMPLE  =                    T / Written by IDL:  Tue Nov  7 19:16:58 2017      \nBITPIX  =                  -32 / Number of bits per data pixel                  \nNAXIS   =                    3 / Number of data axes                            \nNAXIS1  =                  256 /                                                \nNAXIS2  =                  256 /                                                \nNAXIS3  =                  256 /                                                \nEXTEND  =                    T / FITS data may contain extensions               \nDATE    = '2017-11-08'         / Creation UTC (CCCC-MM-DD) date of FITS header  \nCOMMENT FITS (Flexible Image Transport System) format is defined in 'Astronomy  \nCOMMENT and Astrophysics', volume 376, page 359; bibcode 2001A&A...376..359H    \nEND                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ",
+      "source_urls": [
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/dens_t900.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/magx_t900.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/magy_t900.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/magz_t900.fits.gz"
+      ],
+      "transformations": [
+        "rho normalised to <rho> = 1; B normalised to |<B>| (tilt is unit-free)",
+        "dB/B0 = rms(B - <B>) / |<B>| over the full cube",
+        "tilted line of sight: rotate_maps.rotated_maps (trilinear sampling, periodic wrap) at angles 0,15,30,45,60,75,90",
+        "Stokes Q, U, polarization fraction p with intrinsic p0 = 0.15 (Chen et al. 2019, eqs. 1-3)",
+        "p0 derived from p_max (eq. 9) with p_max = map maximum ('max') or 99.5th percentile",
+        "tilt inversion gamma = arccos(sqrt(cos^2 gamma)) from p (eq. 10)",
+        "S cut: pixels with dispersion S below the median S ('low-S'); outer pixel ring masked",
+        "KDE peak (Gaussian, Scott's rule) on a 0-90 degree grid"
+      ],
+      "version": "no version number published by CATS; file SHA-256 used as version"
+    },
+    "cho:b1p.01:t900": {
+      "files": {
+        "bx": {
+          "access_time_utc": "2026-11-17T01:18:33Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 56634262,
+          "http_headers": {
+            "Content-Length": "56634262",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:30 GMT",
+            "ETag": "\"5a023ba5-3602b96\"",
+            "Last-Modified": "Tue, 07 Nov 2017 23:03:01 GMT",
+            "Server": "nginx"
+          },
+          "path": "b1p.01/magx_t900.fits.gz",
+          "sha256": "2f0924a0604aceda657a943a1f1398fee56295b8bfff0020828b18f0a7d8cd70",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/magx_t900.fits.gz"
+        },
+        "by": {
+          "access_time_utc": "2026-11-17T01:18:38Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 61886307,
+          "http_headers": {
+            "Content-Length": "61886307",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:34 GMT",
+            "ETag": "\"5a023baa-3b04f63\"",
+            "Last-Modified": "Tue, 07 Nov 2017 23:03:06 GMT",
+            "Server": "nginx"
+          },
+          "path": "b1p.01/magy_t900.fits.gz",
+          "sha256": "61311da9bc7986afdc172e183e88a616030ff51ebef085e4c179b1043df4e6d7",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/magy_t900.fits.gz"
+        },
+        "bz": {
+          "access_time_utc": "2026-11-17T01:18:40Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 61917604,
+          "http_headers": {
+            "Content-Length": "61917604",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:38 GMT",
+            "ETag": "\"5a023baf-3b0c9a4\"",
+            "Last-Modified": "Tue, 07 Nov 2017 23:03:11 GMT",
+            "Server": "nginx"
+          },
+          "path": "b1p.01/magz_t900.fits.gz",
+          "sha256": "d89e6bb5d8184a9629d135848463eb8a9748a9a8698f0a4de7cb50e222f537af",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/magz_t900.fits.gz"
+        },
+        "rho": {
+          "access_time_utc": "2026-11-17T01:18:30Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 60433715,
+          "http_headers": {
+            "Content-Length": "60433715",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:28 GMT",
+            "ETag": "\"5a023b8e-39a2533\"",
+            "Last-Modified": "Tue, 07 Nov 2017 23:02:38 GMT",
+            "Server": "nginx"
+          },
+          "path": "b1p.01/dens_t900.fits.gz",
+          "sha256": "74b9f1be72ccbefffe6fb99373c448ba844a083301418e4ad60edc0a88372c3f",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/dens_t900.fits.gz"
+        }
+      },
+      "fits_header_rho": "SIMPLE  =                    T / Written by IDL:  Tue Nov  7 18:02:33 2017      \nBITPIX  =                  -32 / Number of bits per data pixel                  \nNAXIS   =                    3 / Number of data axes                            \nNAXIS1  =                  256 /                                                \nNAXIS2  =                  256 /                                                \nNAXIS3  =                  256 /                                                \nEXTEND  =                    T / FITS data may contain extensions               \nDATE    = '2017-11-07'         / Creation UTC (CCCC-MM-DD) date of FITS header  \nCOMMENT FITS (Flexible Image Transport System) format is defined in 'Astronomy  \nCOMMENT and Astrophysics', volume 376, page 359; bibcode 2001A&A...376..359H    \nEND                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ",
+      "source_urls": [
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/dens_t900.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/magx_t900.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/magy_t900.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/magz_t900.fits.gz"
+      ],
+      "transformations": [
+        "rho normalised to <rho> = 1; B normalised to |<B>| (tilt is unit-free)",
+        "dB/B0 = rms(B - <B>) / |<B>| over the full cube",
+        "tilted line of sight: rotate_maps.rotated_maps (trilinear sampling, periodic wrap) at angles 0,15,30,45,60,75,90",
+        "Stokes Q, U, polarization fraction p with intrinsic p0 = 0.15 (Chen et al. 2019, eqs. 1-3)",
+        "p0 derived from p_max (eq. 9) with p_max = map maximum ('max') or 99.5th percentile",
+        "tilt inversion gamma = arccos(sqrt(cos^2 gamma)) from p (eq. 10)",
+        "S cut: pixels with dispersion S below the median S ('low-S'); outer pixel ring masked",
+        "KDE peak (Gaussian, Scott's rule) on a 0-90 degree grid"
+      ],
+      "version": "no version number published by CATS; file SHA-256 used as version"
+    },
+    "cho:b1p1:t900": {
+      "files": {
+        "bx": {
+          "access_time_utc": "2026-11-17T01:18:47Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 57518747,
+          "http_headers": {
+            "Content-Length": "57518747",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:44 GMT",
+            "ETag": "\"5a0336b0-36daa9b\"",
+            "Last-Modified": "Wed, 08 Nov 2017 16:54:08 GMT",
+            "Server": "nginx"
+          },
+          "path": "b1p1/magx_t900.fits.gz",
+          "sha256": "56a7fbfa5627db95bc88872715cda098a28715ad5bbeeadccedd210ff9091311",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/magx_t900.fits.gz"
+        },
+        "by": {
+          "access_time_utc": "2026-11-17T01:18:50Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 61929211,
+          "http_headers": {
+            "Content-Length": "61929211",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:47 GMT",
+            "ETag": "\"5a0336b6-3b0f6fb\"",
+            "Last-Modified": "Wed, 08 Nov 2017 16:54:14 GMT",
+            "Server": "nginx"
+          },
+          "path": "b1p1/magy_t900.fits.gz",
+          "sha256": "3951cf08cf9df1d9ba05bf83f1358b0edc7302fe17da5e69d38947088d745750",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/magy_t900.fits.gz"
+        },
+        "bz": {
+          "access_time_utc": "2026-11-17T01:18:54Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 61934935,
+          "http_headers": {
+            "Content-Length": "61934935",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:50 GMT",
+            "ETag": "\"5a0336bb-3b10d57\"",
+            "Last-Modified": "Wed, 08 Nov 2017 16:54:19 GMT",
+            "Server": "nginx"
+          },
+          "path": "b1p1/magz_t900.fits.gz",
+          "sha256": "66b71d4903f5013994fc4e53a9b2bc8053ca22f40edbd50d0e49ade22619e824",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/magz_t900.fits.gz"
+        },
+        "rho": {
+          "access_time_utc": "2026-11-17T01:18:43Z",
+          "acquired_by": "downloaded by this pipeline",
+          "bytes": 57274208,
+          "http_headers": {
+            "Content-Length": "57274208",
+            "Content-Type": "application/octet-stream",
+            "Date": "Tue, 17 Nov 2026 01:18:40 GMT",
+            "ETag": "\"5a033699-369ef60\"",
+            "Last-Modified": "Wed, 08 Nov 2017 16:53:45 GMT",
+            "Server": "nginx"
+          },
+          "path": "b1p1/dens_t900.fits.gz",
+          "sha256": "b4fe34056b07cc197bd15ca7923c3c0cbc0b75b5f88b80001d9acf324d02110d",
+          "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/dens_t900.fits.gz"
+        }
+      },
+      "fits_header_rho": "SIMPLE  =                    T / Written by IDL:  Wed Nov  8 11:53:39 2017      \nBITPIX  =                  -32 / Number of bits per data pixel                  \nNAXIS   =                    3 / Number of data axes                            \nNAXIS1  =                  256 /                                                \nNAXIS2  =                  256 /                                                \nNAXIS3  =                  256 /                                                \nEXTEND  =                    T / FITS data may contain extensions               \nDATE    = '2017-11-08'         / Creation UTC (CCCC-MM-DD) date of FITS header  \nCOMMENT FITS (Flexible Image Transport System) format is defined in 'Astronomy  \nCOMMENT and Astrophysics', volume 376, page 359; bibcode 2001A&A...376..359H    \nEND                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ",
+      "source_urls": [
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/dens_t900.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/magx_t900.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/magy_t900.fits.gz",
+        "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/magz_t900.fits.gz"
+      ],
+      "transformations": [
+        "rho normalised to <rho> = 1; B normalised to |<B>| (tilt is unit-free)",
+        "dB/B0 = rms(B - <B>) / |<B>| over the full cube",
+        "tilted line of sight: rotate_maps.rotated_maps (trilinear sampling, periodic wrap) at angles 0,15,30,45,60,75,90",
+        "Stokes Q, U, polarization fraction p with intrinsic p0 = 0.15 (Chen et al. 2019, eqs. 1-3)",
+        "p0 derived from p_max (eq. 9) with p_max = map maximum ('max') or 99.5th percentile",
+        "tilt inversion gamma = arccos(sqrt(cos^2 gamma)) from p (eq. 10)",
+        "S cut: pixels with dispersion S below the median S ('low-S'); outer pixel ring masked",
+        "KDE peak (Gaussian, Scott's rule) on a 0-90 degree grid"
+      ],
+      "version": "no version number published by CATS; file SHA-256 used as version"
+    }
+  },
+  "fetch_status": {
+    "cats": {
+      "b.1p.01_t750": "ok",
+      "b.1p1_t900": "ok",
+      "b1p.01_t900": "ok",
+      "b1p1_t900": "ok"
+    },
+    "github_commit": "ok"
+  },
+  "files": {
+    "athenapp:athdf": {
+      "access_time_utc": null,
+      "acquired_by": "local output of my own Athena++ run (upstream artifact identified by SHA-256; the simulation is reproducible to tolerance only)",
+      "bytes": 7348211,
+      "ingested_time_utc": "2026-11-17T18:28:05Z",
+      "local_file_modified_utc": "2026-11-17T01:15:40Z",
+      "path": "data/athena/Turb.out2.00050.athdf",
+      "sha256": "e8a07711fd61b77fc2ec898499e53d4bb3e37f5bb4cdb0aec880694790e3748f",
+      "sha256_matches_previous_record": true,
+      "sha256_matches_recorded_run": true,
+      "url": "https://github.com/PrincetonUniversity/athena/tree/1395e2f543f4368d448cb1a2cf92ba1f910e3416"
+    },
+    "b.1p.01_t750:bx": {
+      "access_time_utc": "2026-11-17T01:18:13Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 61760198,
+      "http_headers": {
+        "Content-Length": "61760198",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:11 GMT",
+        "ETag": "\"5a023616-3ae62c6\"",
+        "Last-Modified": "Tue, 07 Nov 2017 22:39:18 GMT",
+        "Server": "nginx"
+      },
+      "path": "b.1p.01/magx_t750.fits.gz",
+      "sha256": "b809f6cd094ab7ad074a3c8dc228c0749cc19bafe253988bfe41034ac586bf71",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/magx_t750.fits.gz"
+    },
+    "b.1p.01_t750:by": {
+      "access_time_utc": "2026-11-17T01:18:15Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 61935497,
+      "http_headers": {
+        "Content-Length": "61935497",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:13 GMT",
+        "ETag": "\"5a02361b-3b10f89\"",
+        "Last-Modified": "Tue, 07 Nov 2017 22:39:23 GMT",
+        "Server": "nginx"
+      },
+      "path": "b.1p.01/magy_t750.fits.gz",
+      "sha256": "04d515a2a6af7c3212833a7c8c8435d509baaf0dc04fc810bf0b0f66f9f430ec",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/magy_t750.fits.gz"
+    },
+    "b.1p.01_t750:bz": {
+      "access_time_utc": "2026-11-17T01:18:17Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 62061948,
+      "http_headers": {
+        "Content-Length": "62061948",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:15 GMT",
+        "ETag": "\"5a023620-3b2fd7c\"",
+        "Last-Modified": "Tue, 07 Nov 2017 22:39:28 GMT",
+        "Server": "nginx"
+      },
+      "path": "b.1p.01/magz_t750.fits.gz",
+      "sha256": "e7fe99fb751cf7c7fa611aa46f6aeba8e40f267e38774e3ff68dee541ffe1174",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/magz_t750.fits.gz"
+    },
+    "b.1p.01_t750:rho": {
+      "access_time_utc": "2026-11-17T01:18:10Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 67112640,
+      "http_headers": {
+        "Content-Length": "67112640",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:08 GMT",
+        "ETag": "\"5a0237ef-4000ec0\"",
+        "Last-Modified": "Tue, 07 Nov 2017 22:47:11 GMT",
+        "Server": "nginx"
+      },
+      "path": "b.1p.01/dens_t750.fits",
+      "sha256": "3833ed92b893511642d71c13076a9e9431e73dde5b0dcf1f4b64710aa5ef47a7",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/dens_t750.fits"
+    },
+    "b.1p1_t900:bx": {
+      "access_time_utc": "2026-11-17T01:18:23Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 62137384,
+      "http_headers": {
+        "Content-Length": "62137384",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:20 GMT",
+        "ETag": "\"5a024d16-3b42428\"",
+        "Last-Modified": "Wed, 08 Nov 2017 00:17:26 GMT",
+        "Server": "nginx"
+      },
+      "path": "b.1p1/magx_t900.fits.gz",
+      "sha256": "7e60c6ce9a2d25b1189c3bdb72b0f51de586ac3a0d14697da226472ed9d65e02",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/magx_t900.fits.gz"
+    },
+    "b.1p1_t900:by": {
+      "access_time_utc": "2026-11-17T01:18:26Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 62299059,
+      "http_headers": {
+        "Content-Length": "62299059",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:23 GMT",
+        "ETag": "\"5a024d1b-3b69bb3\"",
+        "Last-Modified": "Wed, 08 Nov 2017 00:17:31 GMT",
+        "Server": "nginx"
+      },
+      "path": "b.1p1/magy_t900.fits.gz",
+      "sha256": "e5950546c0fcb63414aa7bf150b0724135f377a619f1d914f8efcd54d98ff49d",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/magy_t900.fits.gz"
+    },
+    "b.1p1_t900:bz": {
+      "access_time_utc": "2026-11-17T01:18:28Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 62291322,
+      "http_headers": {
+        "Content-Length": "62291322",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:26 GMT",
+        "ETag": "\"5a024d21-3b67d7a\"",
+        "Last-Modified": "Wed, 08 Nov 2017 00:17:37 GMT",
+        "Server": "nginx"
+      },
+      "path": "b.1p1/magz_t900.fits.gz",
+      "sha256": "6dcb030e21db75a101398c253e86c6d3877eef9e9f2ebe440b94db1068536680",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/magz_t900.fits.gz"
+    },
+    "b.1p1_t900:rho": {
+      "access_time_utc": "2026-11-17T01:18:19Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 57063779,
+      "http_headers": {
+        "Content-Length": "57063779",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:17 GMT",
+        "ETag": "\"5a024d00-366b963\"",
+        "Last-Modified": "Wed, 08 Nov 2017 00:17:04 GMT",
+        "Server": "nginx"
+      },
+      "path": "b.1p1/dens_t900.fits.gz",
+      "sha256": "db5e01bd61032960007a31e64d259158cf3a3c5d615dcf8dcdea0f9d2a1a9222",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/dens_t900.fits.gz"
+    },
+    "b1p.01_t900:bx": {
+      "access_time_utc": "2026-11-17T01:18:33Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 56634262,
+      "http_headers": {
+        "Content-Length": "56634262",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:30 GMT",
+        "ETag": "\"5a023ba5-3602b96\"",
+        "Last-Modified": "Tue, 07 Nov 2017 23:03:01 GMT",
+        "Server": "nginx"
+      },
+      "path": "b1p.01/magx_t900.fits.gz",
+      "sha256": "2f0924a0604aceda657a943a1f1398fee56295b8bfff0020828b18f0a7d8cd70",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/magx_t900.fits.gz"
+    },
+    "b1p.01_t900:by": {
+      "access_time_utc": "2026-11-17T01:18:38Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 61886307,
+      "http_headers": {
+        "Content-Length": "61886307",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:34 GMT",
+        "ETag": "\"5a023baa-3b04f63\"",
+        "Last-Modified": "Tue, 07 Nov 2017 23:03:06 GMT",
+        "Server": "nginx"
+      },
+      "path": "b1p.01/magy_t900.fits.gz",
+      "sha256": "61311da9bc7986afdc172e183e88a616030ff51ebef085e4c179b1043df4e6d7",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/magy_t900.fits.gz"
+    },
+    "b1p.01_t900:bz": {
+      "access_time_utc": "2026-11-17T01:18:40Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 61917604,
+      "http_headers": {
+        "Content-Length": "61917604",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:38 GMT",
+        "ETag": "\"5a023baf-3b0c9a4\"",
+        "Last-Modified": "Tue, 07 Nov 2017 23:03:11 GMT",
+        "Server": "nginx"
+      },
+      "path": "b1p.01/magz_t900.fits.gz",
+      "sha256": "d89e6bb5d8184a9629d135848463eb8a9748a9a8698f0a4de7cb50e222f537af",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/magz_t900.fits.gz"
+    },
+    "b1p.01_t900:rho": {
+      "access_time_utc": "2026-11-17T01:18:30Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 60433715,
+      "http_headers": {
+        "Content-Length": "60433715",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:28 GMT",
+        "ETag": "\"5a023b8e-39a2533\"",
+        "Last-Modified": "Tue, 07 Nov 2017 23:02:38 GMT",
+        "Server": "nginx"
+      },
+      "path": "b1p.01/dens_t900.fits.gz",
+      "sha256": "74b9f1be72ccbefffe6fb99373c448ba844a083301418e4ad60edc0a88372c3f",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/dens_t900.fits.gz"
+    },
+    "b1p1_t900:bx": {
+      "access_time_utc": "2026-11-17T01:18:47Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 57518747,
+      "http_headers": {
+        "Content-Length": "57518747",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:44 GMT",
+        "ETag": "\"5a0336b0-36daa9b\"",
+        "Last-Modified": "Wed, 08 Nov 2017 16:54:08 GMT",
+        "Server": "nginx"
+      },
+      "path": "b1p1/magx_t900.fits.gz",
+      "sha256": "56a7fbfa5627db95bc88872715cda098a28715ad5bbeeadccedd210ff9091311",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/magx_t900.fits.gz"
+    },
+    "b1p1_t900:by": {
+      "access_time_utc": "2026-11-17T01:18:50Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 61929211,
+      "http_headers": {
+        "Content-Length": "61929211",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:47 GMT",
+        "ETag": "\"5a0336b6-3b0f6fb\"",
+        "Last-Modified": "Wed, 08 Nov 2017 16:54:14 GMT",
+        "Server": "nginx"
+      },
+      "path": "b1p1/magy_t900.fits.gz",
+      "sha256": "3951cf08cf9df1d9ba05bf83f1358b0edc7302fe17da5e69d38947088d745750",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/magy_t900.fits.gz"
+    },
+    "b1p1_t900:bz": {
+      "access_time_utc": "2026-11-17T01:18:54Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 61934935,
+      "http_headers": {
+        "Content-Length": "61934935",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:50 GMT",
+        "ETag": "\"5a0336bb-3b10d57\"",
+        "Last-Modified": "Wed, 08 Nov 2017 16:54:19 GMT",
+        "Server": "nginx"
+      },
+      "path": "b1p1/magz_t900.fits.gz",
+      "sha256": "66b71d4903f5013994fc4e53a9b2bc8053ca22f40edbd50d0e49ade22619e824",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/magz_t900.fits.gz"
+    },
+    "b1p1_t900:rho": {
+      "access_time_utc": "2026-11-17T01:18:43Z",
+      "acquired_by": "downloaded by this pipeline",
+      "bytes": 57274208,
+      "http_headers": {
+        "Content-Length": "57274208",
+        "Content-Type": "application/octet-stream",
+        "Date": "Tue, 17 Nov 2026 01:18:40 GMT",
+        "ETag": "\"5a033699-369ef60\"",
+        "Last-Modified": "Wed, 08 Nov 2017 16:53:45 GMT",
+        "Server": "nginx"
+      },
+      "path": "b1p1/dens_t900.fits.gz",
+      "sha256": "b4fe34056b07cc197bd15ca7923c3c0cbc0b75b5f88b80001d9acf324d02110d",
+      "url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/dens_t900.fits.gz"
+    }
+  },
+  "missing_field_log_build": [
+    {
+      "field": "BUNIT",
+      "file": "b.1p.01/dens_t750.fits",
+      "required": false,
+      "sentinel": "UNKNOWN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/dens_t750.fits.gz"
+    },
+    {
+      "field": "M_s",
+      "file": "b.1p.01/*_t750",
+      "required": false,
+      "sentinel": "NaN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/dens_t750.fits.gz"
+    },
+    {
+      "field": "M_A",
+      "file": "b.1p.01/*_t750",
+      "required": false,
+      "sentinel": "NaN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p.01/t_750/dens_t750.fits.gz"
+    },
+    {
+      "field": "BUNIT",
+      "file": "b.1p1/dens_t900.fits.gz",
+      "required": false,
+      "sentinel": "UNKNOWN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/dens_t900.fits.gz"
+    },
+    {
+      "field": "M_s",
+      "file": "b.1p1/*_t900",
+      "required": false,
+      "sentinel": "NaN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/dens_t900.fits.gz"
+    },
+    {
+      "field": "M_A",
+      "file": "b.1p1/*_t900",
+      "required": false,
+      "sentinel": "NaN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b.1p1/t_900/dens_t900.fits.gz"
+    },
+    {
+      "field": "BUNIT",
+      "file": "b1p.01/dens_t900.fits.gz",
+      "required": false,
+      "sentinel": "UNKNOWN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/dens_t900.fits.gz"
+    },
+    {
+      "field": "M_s",
+      "file": "b1p.01/*_t900",
+      "required": false,
+      "sentinel": "NaN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/dens_t900.fits.gz"
+    },
+    {
+      "field": "M_A",
+      "file": "b1p.01/*_t900",
+      "required": false,
+      "sentinel": "NaN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p.01/t_900/dens_t900.fits.gz"
+    },
+    {
+      "field": "BUNIT",
+      "file": "b1p1/dens_t900.fits.gz",
+      "required": false,
+      "sentinel": "UNKNOWN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/dens_t900.fits.gz"
+    },
+    {
+      "field": "M_s",
+      "file": "b1p1/*_t900",
+      "required": false,
+      "sentinel": "NaN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/dens_t900.fits.gz"
+    },
+    {
+      "field": "M_A",
+      "file": "b1p1/*_t900",
+      "required": false,
+      "sentinel": "NaN",
+      "source_url": "https://users.flatironinstitute.org/~bburkhart/data/CATS/MHD/256/b1p1/t_900/dens_t900.fits.gz"
+    }
+  ],
+  "missing_field_log_fetch": [],
+  "pipeline": {
+    "name": "data_pipeline_alexis.py",
+    "packages": {
+      "astropy": "8.0.2",
+      "h5py": "3.16.0",
+      "numpy": "2.5.5",
+      "pandas": "3.1.1",
+      "requests": "2.34.2",
+      "scipy": "1.18.1",
+      "tenacity": "9.2.1"
+    },
+    "platform": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "script_sha256": "6b0069bf57de3653a545472582dd8b7346be6874c36ff2aabe683afa2e869535",
+    "version": "1.0"
+  },
+  "retry_log": [],
+  "retry_policy": {
+    "backoff": "wait_exponential + wait_random jitter",
+    "jitter_s": 1.0,
+    "library": "tenacity",
+    "max_attempts": 4,
+    "max_s": 30.0,
+    "multiplier_s": 1.0,
+    "not_retried": [
+      "HTTP 404 (recorded as data_status=missing)"
+    ],
+    "retry_on": [
+      "requests.Timeout",
+      "ConnectionError",
+      "cut-off transfer (ChunkedEncodingError / short body)",
+      "HTTP 429",
+      "HTTP 5xx",
+      "HTTP 403 with X-RateLimit-Remaining: 0 or Retry-After"
+    ]
+  }
+}

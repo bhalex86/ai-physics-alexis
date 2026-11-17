@@ -32,20 +32,16 @@ __pycache__/
 .ipynb_checkpoints/
 .DS_Store
 
-*.fits
-*.fits.gz
-*.hdf5
-*.h5
-*.db
-.cats_mcp_key
-audit_log.jsonl
-planted_failures.json
-.env
-.venv/
-venv/
-__pycache__/
-.ipynb_checkpoints/
-.DS_Store
-tilt-project/
+# --- older project folders and archives
 tilt-project/
 *.zip
+
+# --- HW9 pipeline: regenerated, not committed
+cache/maps/
+*.part
+# the pipeline cache DB, results_rotated.csv, cache/raw/*.json and data/athena/* ARE committed
+# the cache DB is committed even though *.db is ignored above (README: "Where things land")
+!cache/pipeline_cache_alexis.db
+# notebook backups and local backup copies
+*.ipynb.bak*
+_backup_before_claude/

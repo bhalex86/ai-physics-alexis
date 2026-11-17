@@ -504,3 +504,15 @@ def test_database_is_read_only(project):
     with pytest.raises(sqlite3.OperationalError):
         with srv.db() as con:
             con.execute("DELETE FROM results")
+
+
+def test_pmax_above_eq8_ceiling_is_flagged():
+    """The 'bad number' trap of the architecture map: p_max above p0/(1 - p0/3) = 0.1579
+    (Chen et al. 2019 eq. 8 with p0 = 0.15) is unphysical and must be flagged; the
+    uniform-field value itself must not be."""
+    import mcp_server_alexis as srv
+    assert srv.PMAX_CEILING == pytest.approx(0.15789, abs=1e-5)
+    assert srv.range_warnings({"p_max": 0.1579, "p0_derived": 0.15}) == []
+    w = srv.range_warnings({"p_max": 0.30, "p0_derived": 0.2727})
+    assert any("p_max = 0.3 is above the physical ceiling" in x for x in w)
+    assert any("p0_derived = 0.2727 is above" in x for x in w)

@@ -352,7 +352,16 @@ def rnd(x, n=3):
     return None if math.isnan(x) else round(x, n)
 
 
+# Chen et al. (2019) eq. 8: no sightline can be more polarized than a uniform field lying in the
+# sky, p_max = p0 / (1 - p0/3) = 0.1579 for the p0 = 0.15 built into this project's maps.  A stored
+# p_max above it (or a p0 derived above the true p0) is unphysical: the "bad number" trap.
+PMAX_CEILING = fm.P0_TRUE / (1 - fm.P0_TRUE / 3)
+CEILING_TOL = 5e-4          # rounding of stored values (4 decimals) and float noise
+
+
 def range_warnings(row):
+    """Physical-range checks on a result row: finite numbers, angles in 0-90 deg, p_max and
+    p0_derived in 0-1 and below the eq. 8 / true-p0 ceilings, |error| <= 90 deg."""
     w = []
     for k, v in row.items():
         if isinstance(v, bool) or not isinstance(v, (int, float)):
@@ -363,6 +372,12 @@ def range_warnings(row):
             w.append(f"{k} = {v} is outside the physical range 0-90 deg")
         elif k in ("p_max", "p0_derived") and not 0 <= v <= 1:
             w.append(f"{k} = {v} is outside the physical range 0-1")
+        elif k == "p_max" and v > PMAX_CEILING + CEILING_TOL:
+            w.append(f"p_max = {v} is above the physical ceiling p0/(1 - p0/3) = {PMAX_CEILING:.4f} "
+                     f"for the maps' p0 = {fm.P0_TRUE} (Chen et al. 2019, eq. 8): unphysical value")
+        elif k == "p0_derived" and v > fm.P0_TRUE + CEILING_TOL:
+            w.append(f"p0_derived = {v} is above the p0 = {fm.P0_TRUE} the maps were built with: "
+                     "unphysical value")
         elif k in ("err", "err_lowS") and abs(v) > 90:
             w.append(f"{k} = {v} is impossible for angles in 0-90 deg")
     return w

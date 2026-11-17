@@ -1,0 +1,44 @@
+{
+  "source": "athena++_own_run",
+  "code": "Athena++ (PrincetonUniversity/athena)",
+  "git_sha": "1395e2f543f4368d448cb1a2cf92ba1f910e3416",
+  "patch_file": "turb_mhd.patch",
+  "patch_sha256": "6a448f74e3179d12186d247b5ca18dcf4e247d00a75f550fa48c81d6ce200d60",
+  "configure": "python3 configure.py --prob=turb -b --eos=isothermal --flux=hlld -fft -hdf5 --cxx=clang++-apple --include=$HOME/miniforge3/include --lib_path=$HOME/miniforge3/lib --cflag=-Wl,-rpath,$HOME/miniforge3/lib",
+  "input_file": "athinput.turb_mhd_64",
+  "input_sha256": "d6cc86357c4e9a9f965dbfde03da6d6abd5d0e4c8656d6824dc5cf4a9367d857",
+  "key_parameters": {
+    "grid": "64^3",
+    "tlim": 5.0,
+    "b0": 2.0,
+    "iso_sound_speed": 1.0,
+    "turb_flag": 2,
+    "rseed": 1234,
+    "nlow": 1,
+    "nhigh": 4,
+    "dedt": 0.5
+  },
+  "conventions": "rho=1, mu=1 so v_A=b0; M_A=v_rms/b0 with 3D rms speed over the box",
+  "machine": {
+    "arch": "arm64",
+    "os": "macOS-15.6.1-arm64-arm-64bit-Mach-O",
+    "compiler": "Apple clang version 17.0.0 (clang-1700.6.4.2)",
+    "python": "3.14.7",
+    "numpy": "2.5.4",
+    "fftw_hdf5": "fftw                       3.3.11           nompi_haf1500d_100  conda-forge\nhdf5                       2.2.0            nompi_h1e41424_102  conda-forge"
+  },
+  "outputs": {
+    "n_athdf": 51,
+    "hdf5_precision": "single",
+    "final_file": "run_64/Turb.out2.00050.athdf",
+    "final_file_sha256": "e8a07711fd61b77fc2ec898499e53d4bb3e37f5bb4cdb0aec880694790e3748f",
+    "reproducibility_note": "outputs depend on compiler/CPU; not bit-identical across machines"
+  },
+  "regime_t_ge_2": {
+    "M_A_mean": 0.4130953252315521,
+    "M_A_min": 0.3984909653663635,
+    "M_A_max": 0.431539922952652,
+    "dB_over_B0_mean": 0.22069783508777618,
+    "n_snapshots": 31
+  }
+}
