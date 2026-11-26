@@ -8,8 +8,6 @@ Branch: `week10observability`. The proposal (15 Oct 2026) is the reference for w
 
 ## Key result
 
-![Estimated vs true tilt for five runs](results/tilt_recovery_alexis.png)
-
 **The estimator works only at moderate field dispersion.** Pre-registered analysis: seven viewing angles, one snapshot per run, p_max = map maximum, graded over true tilts of 30–60°.
 
 | Run | δB/B₀ | Median error (low-S) | Slope | Grade |
