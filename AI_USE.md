@@ -7,16 +7,6 @@ PHYS 7440, B. Alexis. The project uses AI in two different roles, which are kept
 
 Lines marked **(author to confirm)** describe earlier weeks from the README and the commit history; the author should check and complete them.
 
-## By week
-
-| Week / branch | What the AI assistant did | What I did and checked |
-|---|---|---|
-| Week 2 (`main`) | Claude Haiku 4.5 inside the notebook answered textbook problems (the subject of that assignment) | compared its answers with textbook values (`week02_alexis.ipynb`) |
-| Week 7 (`week7mcpserver`) | "most of the code was generated using Claude Opus 5.5" (README) **(author to confirm which files)** | design (`design_alexis.md`), choice of physics and tests, running the server in Claude Desktop **(author to confirm)** |
-| Week 8 (`week8eval`) | **(author to confirm)** | the answer key comes from `make_ground_truth.py`, which never calls an LLM; the baseline notebook |
-| Week 9 (`week9pipeline`) | **(author to confirm)** | the Athena++ run (built and run on my laptop); the pipeline run on the CATS data; `check_p0_athena_alexis.py` diagnosis |
-| **Week 10 (`week10observability`)** | Claude Opus 5.5 in a Claude agent session (26 Nov 2026), working from my instructions on a copy of the repository. It wrote: `obs_logging_alexis.py`, `trace_alexis.py`, `make_key_result_alexis.py`, `rebuild_alexis.py`, `review_checks_alexis.py`, the `Makefile`, `REPRODUCIBILITY.md`, `BUG_LOG.md`, `PHYSICS_REVIEW_alexis.md`, this file's Week 10 row, the HW10 sections of `README.md`, `test_observability_alexis.py`, `test_physics_alexis.py`, and the changes in the files listed in `BUG_LOG.md`. It found bugs 1–7 and the physics findings. The commits it made carry `Co-Authored-By: Claude Opus 5.5` and a link to the session. | I set the scope (the HW10 assignment, my proposal and Chen et al. 2019 as references), chose which changes to make (the pre-registered analysis stays the headline; implement the measured systematics), and decided what to upload. **(author: add what you reviewed or reran yourself)** |
-
 ## How AI-written work was checked
 
 - **Tests:** 115 offline tests (`make test`), including physics invariants that hold regardless of the code (`test_physics_alexis.py`: Chen eqs. 7–10, the eq. 8 ceiling, geometry invariance) and a regression test for every bug in `BUG_LOG.md`, each shown to fail before its fix.
