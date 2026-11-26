@@ -54,3 +54,6 @@ logs/
 
 # scratch projects of make check-full-rebuild
 .fullcheck/
+
+# Claude Desktop / MCP server stderr capture (local only)
+mcp_server_stderr.log
