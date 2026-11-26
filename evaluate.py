@@ -58,6 +58,45 @@ def grade(true_deg, est_deg, err_limit=ERR_LIMIT, slope_min=SLOPE_MIN,
     return out
 
 
+def grade_with_ci(true_deg, est_deg, groups=None, n_boot=2000, seed=0, level=0.95,
+                  **kw):
+    """grade() plus bootstrap uncertainties (HW10, PHYSICS_REVIEW_alexis.md finding 8).
+
+    The maps inside the 30-60 deg window are resampled with replacement ``n_boot`` times
+    (fixed ``seed``), and grade() is recomputed on each resample.  Returns the grade of the
+    full set, the central ``level`` interval of median |error| and of the slope, and
+    p_pass = the fraction of resamples that PASS.  With ``groups`` (e.g. the snapshot of
+    each map), also the spread between groups: the range of the per-group median signed
+    error, which shows how much one snapshot alone could mislead.
+    """
+    t = np.asarray(true_deg, dtype=float)
+    e = np.asarray(est_deg, dtype=float)
+    tmin, tmax = kw.get("tmin", TILT_MIN), kw.get("tmax", TILT_MAX)
+    sel = (t >= tmin - TOL) & (t <= tmax + TOL) & np.isfinite(e)
+    out = grade(t, e, **kw)
+    ts, es = t[sel], e[sel]
+    rng = np.random.default_rng(seed)
+    mae, slope, passes = [], [], []
+    for _ in range(n_boot):
+        i = rng.integers(0, ts.size, ts.size)
+        if np.ptp(ts[i]) == 0:
+            continue
+        g = grade(ts[i], es[i], **kw)
+        mae.append(g["median_abs_err"])
+        slope.append(g["slope"])
+        passes.append(g["PASS"])
+    q = [(1 - level) / 2 * 100, (1 + level) / 2 * 100]
+    out.update(median_abs_err_ci=[float(x) for x in np.percentile(mae, q)],
+               slope_ci=[float(x) for x in np.percentile(slope, q)],
+               p_pass=float(np.mean(passes)), n_boot=len(mae), ci_level=level)
+    if groups is not None:
+        gsel = np.asarray(groups)[sel]
+        per = {str(g): float(np.median(es[gsel == g] - ts[gsel == g])) for g in sorted(set(gsel))}
+        out["median_signed_err_by_group"] = per
+        out["group_spread_deg"] = float(max(per.values()) - min(per.values())) if per else 0.0
+    return out
+
+
 def grade_csv(path):
     df = pd.read_csv(path)
     # if a run was rerun, keep its most recent row per angle

@@ -26,3 +26,8 @@ tenacity>=8.2          # retries with exponential backoff
 requests>=2.31         # HTTP
 python-dotenv>=1.0     # optional: GITHUB_TOKEN from .env
 matplotlib>=3.8        # lab notebook plot
+# --- added for HW10 (obs_logging_alexis.py): structured JSON logs of every tool call
+python-json-logger>=3.1
+# HW10: the evaluation harness (hw8/eval_harness.py) and its tests
+pint>=0.24
+anthropic>=0.40

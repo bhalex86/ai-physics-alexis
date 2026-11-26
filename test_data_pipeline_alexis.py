@@ -397,7 +397,7 @@ def test_exported_csv_feeds_build_db(tmp_path):
     out = build_db.build(str(tmp_path / "r.csv"), str(tmp_path / "none.csv"), str(tmp_path / "results.db"),
                          verbose=False)
     con = sqlite3.connect(out)
-    assert con.execute("SELECT COUNT(*) FROM results").fetchone()[0] == 14      # 7 angles x 2 rules
+    assert con.execute("SELECT COUNT(*) FROM results").fetchone()[0] == 2 * len(pl.ANGLES)  # angles x 2 rules
     assert {r[0] for r in con.execute("SELECT DISTINCT rule FROM results")} == {"max", "p99.5"}
 
 
@@ -417,7 +417,7 @@ def test_corrupt_cached_map_is_recomputed(tmp_path):
     prov = pl.Provenance(tmp_path / "p.json")
     pl.build_cats_run("b.1p.01_t750", "ok", tmp_path, tmp_path / "cache", prov)
     maps = sorted((tmp_path / "cache" / "maps").glob("*.npy"))
-    assert len(maps) == 7 and not list((tmp_path / "cache" / "maps").glob("*.tmp"))
+    assert len(maps) == len(pl.ANGLES) and not list((tmp_path / "cache" / "maps").glob("*.tmp"))
     maps[0].write_bytes(b"garbage")
     row, est, _ = pl.build_cats_run("b.1p.01_t750", "ok", tmp_path, tmp_path / "cache", prov)
     assert row["data_status"] == "ok" and all(e["status"] == "ok" for e in est)
@@ -545,3 +545,35 @@ def test_symlinked_run_folder_stays_project_relative(tmp_path):
     (project / "b1p1").symlink_to(data, target_is_directory=True)
     assert pl.relpath(project / "b1p1" / "dens_t900.fits.gz", project) == "b1p1/dens_t900.fits.gz"
     assert pl.relpath(tmp_path / "other.txt", project) == str(tmp_path / "other.txt")
+
+
+# ------------------------------------------------------------------ HW10 regression tests
+def test_source_url_is_the_url_of_the_file_actually_used(fast, tmp_path, server):
+    """BUG_LOG.md bug 1: the density of b.1p.01 t750 exists only as dens_t750.fits (the
+    .fits.gz URL is a 404).  Every recorded URL must be the one that serves the file on
+    disk: in the files record of a pre-existing local file, in the cache's
+    datasets.source_url, and in the missing-field log."""
+    import requests
+    prov = pl.Provenance(tmp_path / "p.json")
+    assert pl.fetch_cats_run("b.1p.01_t750", tmp_path, prov) == "ok"
+    local = tmp_path / "b.1p.01" / "dens_t750.fits"
+    assert local.exists()
+
+    # second run on the same folder: the cubes are now pre-existing local files,
+    # the layout the README asks users with already-downloaded data to use
+    prov2 = pl.Provenance(tmp_path / "p2.json")
+    assert pl.fetch_cats_run("b.1p.01_t750", tmp_path, prov2) == "ok"
+    assert prov2.data["files"]["b.1p.01_t750:rho"]["url"].endswith("/dens_t750.fits")
+    pl.MISSING.clear()
+    row, est, maps = pl.build_cats_run("b.1p.01_t750", "ok", tmp_path, tmp_path / "cache", prov2)
+    assert row["source_url"].endswith("/dens_t750.fits")
+    bunit = [e for e in pl.MISSING if e["field"] == "BUNIT"][0]
+    assert bunit["source_url"] == row["source_url"]
+
+    # and the recorded URL really serves the bytes that were used
+    r = requests.get(row["source_url"], timeout=5)
+    assert r.status_code == 200
+    assert hashlib.sha256(r.content).hexdigest() == row["sha256_rho"] == pl.sha256_file(local)
+    for comp in pl.COMPONENTS:
+        rec = prov2.data["files"][f"b.1p.01_t750:{comp}"]
+        assert rec["url"].rsplit("/", 1)[1] == Path(rec["path"]).name

@@ -516,3 +516,47 @@ def test_pmax_above_eq8_ceiling_is_flagged():
     w = srv.range_warnings({"p_max": 0.30, "p0_derived": 0.2727})
     assert any("p_max = 0.3 is above the physical ceiling" in x for x in w)
     assert any("p0_derived = 0.2727 is above" in x for x in w)
+
+
+def test_very_ordered_field_is_flagged_biased_low(project):
+    """PHYSICS_REVIEW_alexis.md, finding 1: dB/B0 = 0.1 is NOT the safe regime: the server must
+    say the tilt is underestimated (lower bound), and warn."""
+    n, rng = 32, np.random.default_rng(7)
+    k = np.fft.fftfreq(n)
+    kk = np.sqrt(k[:, None, None]**2 + k[None, :, None]**2 + k[None, None, :]**2)
+    kk[0, 0, 0] = 1
+    smooth = lambda: np.real(np.fft.ifftn(np.fft.fftn(rng.standard_normal((n, n, n))) * kk**-2.5))
+    d1 = lambda a, ax: (np.roll(a, -1, ax) - np.roll(a, 1, ax)) / 2
+    A0, A1, A2 = smooth(), smooth(), smooth()
+    Bz, By, Bx = d1(A2, 1) - d1(A1, 2), d1(A0, 2) - d1(A2, 0), d1(A1, 0) - d1(A0, 1)
+    s = 0.1 / np.sqrt(np.mean(Bx**2 + By**2 + Bz**2))
+    d = project / "ordered"
+    d.mkdir(exist_ok=True)
+    for name, arr in [("dens", np.exp(0.3 * smooth() / smooth().std())), ("magx", Bx * s + 1.0),
+                      ("magy", By * s), ("magz", Bz * s)]:
+        fits.PrimaryHDU(arr.astype(np.float32)).writeto(d / f"{name}.fits", overwrite=True)
+    out = ok("estimate_tilt_from_cubes", {"density": "ordered/dens.fits", "bx": "ordered/magx.fits",
+                                          "by": "ordered/magy.fits", "bz": "ordered/magz.fits",
+                                          "line_of_sight": "tilted", "angle": 60})
+    reg = out["field_regime"]
+    assert reg["reliability"] == "biased_low" and reg["ordered_field_dominates"] is True
+    assert any("lower bound" in w for w in out["warnings"])
+    assert out["estimate_deg"]["low_S"] < out["true_tilt_gamma_B_deg"]     # the bias it warns of
+    strong = ok("estimate_tilt_from_cubes", CUBES)                       # dB/B0 ~ 0.5: no warning
+    assert strong["field_regime"]["reliability"] == "reliable"
+
+
+def test_no_tool_can_read_the_answer_key(project):
+    """HW10: the HW8 answer key is public on GitHub, so the only safe assumption is that it may
+    sit next to the data.  No tool may return its contents, by any route."""
+    import shutil
+    from pathlib import Path
+    key = Path(__file__).resolve().parent / "hw8" / "ground_truth_alexis.json"
+    shutil.copy(key, project / "ground_truth_alexis.json")
+    fails("inspect_fits", {"path": "ground_truth_alexis.json"}, "INVALID_INPUT")
+    fails("inspect_fits", {"path": str(key)}, "PATH_NOT_ALLOWED")
+    fails("read_source", {"name": "ground_truth_alexis"}, "UNKNOWN_NAME")
+    fails("estimate_tilt_from_stokes", {"stokes_i": "ground_truth_alexis.json",
+                                        "stokes_q": "ground_truth_alexis.json",
+                                        "stokes_u": "ground_truth_alexis.json"}, "INVALID_INPUT")
+    fails("cats_catalog", {"folder": "../../github.com/"}, "INVALID_INPUT")

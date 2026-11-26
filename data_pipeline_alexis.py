@@ -75,7 +75,13 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import firstmap_b as fm      # noqa: E402  Stokes maps, Chen eqs. 1-3, 9, 10
+import obs_logging_alexis as obs   # noqa: E402  HW10: JSON log of every tool call
 import rotate_maps as rm     # noqa: E402  tilted lines of sight
+
+# HW10 reproducibility: seed the global generators first thing (random.seed(42) and
+# numpy.random.seed(42)).  The estimator's own randomness (the KDE subsample in
+# firstmap_b.kde_peak) uses a local generator with seed 0; see REPRODUCIBILITY.md.
+SEEDS = obs.seed_everything(42)
 
 try:                          # optional: read a GitHub token from .env
     from dotenv import load_dotenv
@@ -86,7 +92,7 @@ except Exception:             # python-dotenv is optional
 log = logging.getLogger("pipeline")
 
 # ------------------------------------------------------------------ constants
-PIPELINE_VERSION = "1.0"
+PIPELINE_VERSION = "1.1"   # 1.1 (HW10): JSON tool-call log; source-URL fix (BUG_LOG.md)
 CATS_BASE_URL = os.environ.get("CATS_BASE_URL",
                                "https://users.flatironinstitute.org/~bburkhart/data/CATS/")
 GITHUB_API_URL = os.environ.get("GITHUB_API_URL", "https://api.github.com")
@@ -98,7 +104,9 @@ SENTINEL_STR = "UNKNOWN"
 SENTINEL_COUNT = -1
 FLOAT_DECIMALS = 6                # fixed precision for every stored float
 
-ANGLES = [0, 15, 30, 45, 60, 75, 90]          # viewing tilts, degrees (HW8 convention)
+# viewing tilts, degrees.  HW10: 5 deg steps (was 0/15/.../90), so the 30-60 deg grade uses
+# 7 tilts per snapshot instead of 3 (PHYSICS_REVIEW_alexis.md, finding 8)
+ANGLES = list(range(0, 91, 5))
 PMAX_RULES = {"max": 100.0, "p99.5": 99.5}    # p_max = map maximum / 99.5th percentile
 STAT_TIMEOUT = (float(os.environ.get("PIPELINE_CONNECT_TIMEOUT", "10")),
                 float(os.environ.get("PIPELINE_READ_TIMEOUT", "60")))   # seconds
@@ -108,13 +116,19 @@ BACKOFF_JITTER = float(os.environ.get("PIPELINE_BACKOFF_JITTER", "1.0"))
 RETRY_AFTER_CAP = 120.0                       # never sleep longer than this on a header hint
 MAX_ATTEMPTS = 4                              # 1 try + 3 retries
 
-# CATS runs registered by the project: legacy name -> (run folder, snapshot)
-CATS_RUNS = {
-    "b.1p.01_t750": ("b.1p.01", 750),
-    "b1p1_t900": ("b1p1", 900),
-    "b1p.01_t900": ("b1p.01", 900),
-    "b.1p1_t900": ("b.1p1", 900),
+# CATS runs registered by the project: legacy name -> (run folder, snapshot).
+# HW10: three snapshots per run (finding 8: one snapshot gives no estimate of the run-to-run
+# scatter).  The first-listed snapshot of each run is its PRIMARY one, used up to HW9 and by
+# the HW8 answer key.
+CATS_SNAPSHOTS = {
+    "b1p1": (900, 850, 800),
+    "b1p.01": (900, 850, 800),
+    "b.1p1": (900, 850, 800),
+    "b.1p.01": (750, 700, 650),
 }
+CATS_RUNS = {f"{run}_t{snap}": (run, snap) for run, snaps in CATS_SNAPSHOTS.items()
+             for snap in snaps}
+PRIMARY_CATS_RUNS = sorted(f"{run}_t{snaps[0]}" for run, snaps in CATS_SNAPSHOTS.items())
 DEFAULT_CATS_RUNS = ["b.1p.01_t750"]
 COMPONENTS = {"rho": "dens", "bx": "magx", "by": "magy", "bz": "magz"}
 
@@ -280,7 +294,9 @@ def _before_sleep(state: RetryCallState):
     RETRY_EVENTS.append({"attempt": state.attempt_number, "error": str(exc),
                          "wait_s": round(float(wait), 3)})
     log.warning("retry %d/%d in %.2f s after: %s", state.attempt_number, MAX_ATTEMPTS - 1,
-                wait, exc)
+                wait, exc, extra={"retry_attempt": state.attempt_number,
+                                  "retry_wait_s": round(float(wait), 3),
+                                  "retry_error": str(exc)})
 
 
 def _parse_retry_after(resp):
@@ -313,6 +329,7 @@ def _retrying(fn):
                  reraise=True)(fn)
 
 
+@obs.traced("data_pipeline.http_get_attempt")
 def _get_once(url, headers=None, stream=False):
     """One GET attempt, classifying the response.  Returns the open ``requests.Response``.
 
@@ -361,6 +378,7 @@ def relpath(path, project):
     return str(path)
 
 
+@obs.traced("data_pipeline.download_attempt")
 def _download_once(url, dest, project):
     """One attempt to stream ``url`` into ``dest`` (via a .part file).
 
@@ -476,6 +494,22 @@ def cats_urls(run_folder, snap, comp):
     return [(base + ".fits.gz", f"{stem}.fits.gz"), (base + ".fits", f"{stem}.fits")]
 
 
+def cats_url_of(local, run_folder, snap, comp):
+    """The archive URL of a local CATS file: the candidate whose file name matches it.
+
+    BUG_LOG.md, bug 1: the URL used to be ``cats_urls(...)[0][0]`` (always the ``.fits.gz``
+    candidate), which is a 404 for runs whose density is stored uncompressed
+    (``dens_t750.fits`` of b.1p.01).  ``local=None`` (file not on disk) keeps the first
+    candidate, the URL that was tried first.
+    """
+    cands = cats_urls(run_folder, snap, comp)
+    if local is not None:
+        for url, fname in cands:
+            if Path(local).name == fname:
+                return url
+    return cands[0][0]
+
+
 def find_local(project, run_folder, snap, comp):
     """Return an existing local CATS file for this component, or None."""
     stem = f"{COMPONENTS[comp]}_t{snap}"
@@ -486,6 +520,7 @@ def find_local(project, run_folder, snap, comp):
     return None
 
 
+@obs.traced("data_pipeline.fetch_cats_run", skip_args=("prov",))
 def fetch_cats_run(legacy, project, prov, force=False):
     """Make sure the four cubes of one CATS run are on disk; record provenance.
 
@@ -499,7 +534,7 @@ def fetch_cats_run(legacy, project, prov, force=False):
         local = None if force else find_local(project, run_folder, snap, comp)
         if local is not None:
             prov.record_file(f"{legacy}:{comp}", {
-                "url": cats_urls(run_folder, snap, comp)[0][0], "path": relpath(local, project),
+                "url": cats_url_of(local, run_folder, snap, comp), "path": relpath(local, project),
                 "sha256": sha256_file(local), "bytes": local.stat().st_size,
                 "access_time_utc": None, "local_file_modified_utc": mtime_utc(local),
                 "acquired_by": "pre-existing local file (not downloaded by this pipeline run; "
@@ -530,6 +565,7 @@ def fetch_cats_run(legacy, project, prov, force=False):
     return status
 
 
+@obs.traced("data_pipeline.load_cats_cubes", skip_args=("prov",))
 def load_cats_cubes(legacy, project, prov):
     """Read the four FITS cubes of a CATS run (float64) and return (rho, B, info).
 
@@ -546,7 +582,7 @@ def load_cats_cubes(legacy, project, prov):
     if len(shapes) != 1:
         raise ValueError(f"cube shapes differ for {legacy}: {shapes}")
     hdr = fits.getheader(paths["rho"])
-    url0 = cats_urls(run_folder, snap, "rho")[0][0]
+    url0 = cats_url_of(paths["rho"], run_folder, snap, "rho")
     info = {"header_text": hdr.tostring(sep="\n"),
             "bunit": str(header_get(hdr, "BUNIT", SENTINEL_STR, paths["rho"], url0)),
             "shas": {c: sha256_file(p) for c, p in paths.items()}}
@@ -556,6 +592,7 @@ def load_cats_cubes(legacy, project, prov):
 
 
 # ================================================================== source 2: Athena++
+@obs.traced("data_pipeline.github_commit", skip_args=("prov",))
 def github_commit(sha, raw_dir, prov):
     """Fetch the GitHub API JSON for the pinned Athena++ commit (with retries).
 
@@ -598,6 +635,7 @@ def github_commit(sha, raw_dir, prov):
     return rec
 
 
+@obs.traced("data_pipeline.read_athdf")
 def read_athdf(path):
     """Read an Athena++ ``.athdf`` file into full-box arrays using h5py only.
 
@@ -658,6 +696,7 @@ def alfven_speed(code, B0, rho_mean):
 
 
 # ================================================================== normalisation
+@obs.traced("data_pipeline.normalise")
 def normalise(rho, B, vel, code, cs, file, url):
     """Normalise a run and measure its properties.
 
@@ -705,6 +744,7 @@ def map_file(cache, sig):
     return cache / "maps" / f"{sig}.npy"
 
 
+@obs.traced("data_pipeline.estimate_run")
 def estimate_run(rho_n, B_n, shas, cache):
     """Run the Chen estimator at every angle and p_max rule for one normalised run.
 
@@ -727,9 +767,11 @@ def estimate_run(rho_n, B_n, shas, cache):
             except (ValueError, OSError, EOFError):
                 arr = None                          # corrupt or half-written cache file: recompute
         if arr is not None:
+            obs.event("map_cache_hit", angle=ang, map_file=mf)
             Q, U, p, cos2 = (arr[i].astype(np.float64) for i in range(4))
         else:
-            _, Q, U, p, cos2 = rm.rotated_maps(rho_n, B_n, ang, field_ax, perp_ax)
+            _, Q, U, p, cos2 = obs.call("rotate_maps.rotated_maps", rm.rotated_maps,
+                                        rho_n, B_n, ang, field_ax, perp_ax)
             mf.parent.mkdir(parents=True, exist_ok=True)
             tmp = mf.with_name(mf.name + ".tmp")
             with open(tmp, "wb") as fh:             # write, then rename: never a partial map
@@ -739,12 +781,9 @@ def estimate_run(rho_n, B_n, shas, cache):
                       "map_content_sha256": sha256_file(mf)})
         truth = rm.true_gamma(mean, ang, field_ax, perp_ax)
         for rule, pct in PMAX_RULES.items():
-            old = fm.PMAX_PERCENTILE
-            fm.PMAX_PERCENTILE = pct
-            try:
-                r = fm.estimate_from_maps(Q, U, p, cos2, truth, mask_border=True)
-            finally:
-                fm.PMAX_PERCENTILE = old
+            # the rule is passed explicitly (no longer by changing fm.PMAX_PERCENTILE)
+            r = obs.call(f"firstmap_b.estimate_from_maps[{rule}]", fm.estimate_from_maps,
+                         Q, U, p, cos2, truth, mask_border=True, pmax_percentile=pct)
             vals = {k: r[k] for k in RESULT_COLS}
             if not all(math.isfinite(vals[k]) for k in ("gamma_B_true", "gamma_obs", "gamma_obs_lowS")):
                 log.warning("non-finite estimate at %d deg, rule %s: marked DATA_UNAVAILABLE", ang, rule)
@@ -761,6 +800,7 @@ def refuse_rows(field_ax="UNKNOWN"):
              **{k: None for k in RESULT_COLS}} for a in ANGLES for rule in PMAX_RULES]
 
 
+@obs.traced("data_pipeline.check_cubes")
 def check_cubes(rho, B):
     """Return a list of required-input problems in the cubes (empty list = usable).
 
@@ -826,11 +866,12 @@ def finish_dataset(row, props, shas, n, bunit, convention, first_missing_idx, es
     return row
 
 
+@obs.traced("data_pipeline.build_cats_run", skip_args=("prov",))
 def build_cats_run(legacy, status, project, cache, prov):
     """Normalise and estimate one CATS run.  Returns (dataset row, estimates, map rows)."""
     run_folder, snap = CATS_RUNS[legacy]
     run_id = f"cho:{run_folder}:t{snap}"
-    url = cats_urls(run_folder, snap, "rho")[0][0]
+    url = cats_url_of(find_local(project, run_folder, snap, "rho"), run_folder, snap, "rho")
     have = all(find_local(project, run_folder, snap, c) is not None for c in COMPONENTS)
     if not have:
         status = status if status in ("missing", "unreachable") else "missing"
@@ -844,7 +885,7 @@ def build_cats_run(legacy, status, project, cache, prov):
         local = find_local(project, run_folder, snap, comp)
         rec = prov.data["files"].get(key)
         if not rec or rec.get("sha256") != sha256_file(local):
-            prov.record_file(key, {"url": cats_urls(run_folder, snap, comp)[0][0],
+            prov.record_file(key, {"url": cats_url_of(local, run_folder, snap, comp),
                                    "path": relpath(local, project), "sha256": sha256_file(local),
                                    "bytes": local.stat().st_size, "access_time_utc": None,
                                    "local_file_modified_utc": mtime_utc(local),
@@ -882,6 +923,7 @@ def build_cats_run(legacy, status, project, cache, prov):
     return row, est, mrows
 
 
+@obs.traced("data_pipeline.build_athena_run", skip_args=("prov",))
 def build_athena_run(athdf, meta_json, project, cache, prov, commit_rec):
     """Normalise and estimate the Athena++ run.  Returns (dataset row, estimates, maps)."""
     sha7 = ATHENA_SHA[:7]
@@ -969,6 +1011,7 @@ TRANSFORMATIONS = [
 
 
 # ================================================================== cache (SQLite)
+@obs.traced("data_pipeline.write_cache", skip_args=("estimates", "maps"))
 def write_cache(db_path, datasets, estimates, maps):
     """Write the SQLite cache from scratch: sorted rows, rounded floats, no timestamps."""
     db_path = Path(db_path)
@@ -997,6 +1040,7 @@ def write_cache(db_path, datasets, estimates, maps):
     os.replace(tmp, db_path)
 
 
+@obs.traced("data_pipeline.canonical_hash")
 def canonical_hash(db_path):
     """SHA-256 of the cache *content*: schema text plus every row of the canonical tables,
     serialised as sorted JSON.  Independent of the SQLite library version and of file
@@ -1015,6 +1059,7 @@ def canonical_hash(db_path):
     return h.hexdigest()
 
 
+@obs.traced("data_pipeline.export_results_csv")
 def export_results_csv(db_path, out_csv):
     """Write ``results_rotated.csv`` in the format ``build_db.py`` reads, so the existing
     MCP results.db can be fed from this cache.  Run names carry ``_pmax100`` for the
@@ -1036,6 +1081,7 @@ def export_results_csv(db_path, out_csv):
 
 
 # ================================================================== commands
+@obs.traced("data_pipeline.cmd_fetch", skip_args=("prov",))
 def cmd_fetch(args, project, prov):
     """--fetch: get CATS files (retries, 404 handling) and the GitHub commit record."""
     statuses = {}
@@ -1060,6 +1106,7 @@ def cmd_fetch(args, project, prov):
     return statuses, commit
 
 
+@obs.traced("data_pipeline.cmd_build", skip_args=("prov",))
 def cmd_build(args, project, prov):
     """--build: normalise, estimate and write the SQLite cache and provenance hash."""
     cache = project / "cache"
@@ -1101,6 +1148,7 @@ def cmd_build(args, project, prov):
                  d["dB_over_B0"], d["M_A"], d["missing_fields"])
 
 
+@obs.traced("data_pipeline.record_reproduction")
 def record_reproduction(before, after):
     """Compare a fresh build with the cache hash that was recorded before it ran.
 
@@ -1124,6 +1172,7 @@ def record_reproduction(before, after):
                  "REPRODUCES" if after["reproduces_previous_build"] else "DOES NOT reproduce")
 
 
+@obs.traced("data_pipeline.cmd_verify", skip_args=("prov",))
 def cmd_verify(args, project, prov):
     """--verify: recompute the cache hash and compare it with provenance.  Returns 0/1."""
     ok = True
@@ -1172,7 +1221,10 @@ def parse_args(argv=None):
     ap.add_argument("--project", default=str(HERE), help="folder holding run folders, cache/, provenance")
     ap.add_argument("--runs", nargs="+", default=None, choices=sorted(CATS_RUNS),
                     help=f"CATS runs (default: {' '.join(DEFAULT_CATS_RUNS)})")
-    ap.add_argument("--all", action="store_true", help="all four CATS Cho-ENO runs")
+    ap.add_argument("--all", action="store_true",
+                    help="all four CATS Cho-ENO runs, every snapshot in CATS_SNAPSHOTS (12 cubes sets)")
+    ap.add_argument("--primary", action="store_true",
+                    help="all four CATS runs, primary snapshot only (the HW9 run set)")
     ap.add_argument("--athena-file", default="data/athena/Turb.out2.00050.athdf")
     ap.add_argument("--athena-meta", default="data/athena/athena_run_provenance.json")
     ap.add_argument("--source", choices=["both", "cats", "athena"], default="both",
@@ -1182,8 +1234,12 @@ def parse_args(argv=None):
     ap.add_argument("--no-github", action="store_true", help="skip the GitHub API call")
     ap.add_argument("--force", action="store_true", help="re-download even if files exist")
     ap.add_argument("--provenance", default="provenance_alexis.json")
+    ap.add_argument("--log-file", default=None,
+                    help="JSON-lines tool-call log (default: $OBS_LOG_FILE, else "
+                         "<project>/logs/pipeline_alexis.jsonl)")
     a = ap.parse_args(argv)
-    a.run_list = sorted(CATS_RUNS) if a.all else (a.runs or DEFAULT_CATS_RUNS)
+    a.run_list = (sorted(CATS_RUNS) if a.all else PRIMARY_CATS_RUNS if a.primary
+                  else (a.runs or DEFAULT_CATS_RUNS))
     if a.source == "cats":
         a.no_athena = True
     if a.source == "athena":
@@ -1202,6 +1258,7 @@ def main(argv=None):
     project = Path(args.project).resolve()
     global PROJECT_ROOT
     PROJECT_ROOT = project
+    obs.configure("pipeline", log_file=args.log_file, project_root=project)
     args.athena_file = (project / args.athena_file) if not Path(args.athena_file).is_absolute() \
         else Path(args.athena_file)
     args.athena_meta = (project / args.athena_meta) if not Path(args.athena_meta).is_absolute() \

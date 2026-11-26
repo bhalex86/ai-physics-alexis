@@ -34,7 +34,7 @@ import build_db                  # noqa: E402
 import firstmap_b as fm          # noqa: E402
 import rotate_maps as rm         # noqa: E402
 
-ANGLES = [0, 15, 30, 45, 60, 75, 90]
+ANGLES = list(range(0, 91, 5))      # same tilts as data_pipeline_alexis.ANGLES (HW10)
 RULES = {"max": 100.0, "p99.5": 99.5}
 
 
@@ -68,15 +68,14 @@ def main(out_dir=HERE / "sample_project", n=64):
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
         for rule, pct in RULES.items():
-            fm.PMAX_PERCENTILE = pct
             name = "sample_run" + ("_pmax100" if rule == "max" else "")
             for th in ANGLES:
                 _, Qr, Ur, p, cos2 = rm.rotated_maps(rho, B, th, field_ax, perp_ax)
                 truth = rm.true_gamma(mean, th, field_ax, perp_ax)
-                r = fm.estimate_from_maps(Qr, Ur, p, cos2, truth, mask_border=True)
+                r = fm.estimate_from_maps(Qr, Ur, p, cos2, truth, mask_border=True,
+                                          pmax_percentile=pct)
                 w.writerow({"run": name, "angle": th, "field_axis": field_ax,
                             **{k: r[k] for k in build_db.RESULT_COLS}})
-    fm.PMAX_PERCENTILE = 99.5
 
     dB = float(np.sqrt(sum(((B[k] - B[k].mean())**2).mean() for k in "xyz")))
     with open(out_dir / "turbulence.csv", "w", newline="") as f:

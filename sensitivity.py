@@ -30,10 +30,11 @@ import rotate_maps as rm
 PCTS = [100.0, 99.9, 99.5, 99.0]         # 100 = maximum
 
 
-def kde_peak_reflected(values, max_n=20000, seed=0):
+def kde_peak_reflected(values, max_n=None, seed=0):
+    """Reflected-KDE peak; every value is used (as firstmap_b.kde_peak since HW10)."""
     v = np.asarray(values).ravel()
     v = v[np.isfinite(v)]
-    if v.size > max_n:
+    if max_n is not None and v.size > max_n:
         v = np.random.default_rng(seed).choice(v, max_n, replace=False)
     if v.size < 10 or np.ptp(v) == 0:
         return float(np.median(v)) if v.size else np.nan

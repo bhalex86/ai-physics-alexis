@@ -29,7 +29,9 @@ import numpy as np
 from scipy.stats import gaussian_kde
 
 P0_TRUE = 0.15            # intrinsic polarization put into the maps (King et al. 2018)
-PMAX_PERCENTILE = 99.5    # p_max from a high percentile, not the single brightest pixel
+PMAX_PERCENTILE = 99.5    # default p_max rule when none is passed.  NOTE: the project's
+                          # pre-registered rule is 100 (map maximum); pass pmax_percentile=100.0
+                          # explicitly rather than relying on this module-level setting.
 
 # array axis -> field component name (FITS order: z, y, x)
 AXIS_NAME = {0: "z", 1: "y", 2: "x"}
@@ -49,7 +51,13 @@ def load_cubes(rho_f, bx_f, by_f, bz_f):
 
 
 def fake_cube(n=64, b0=1.0, db=0.3, seed=0):
-    """Mean field along x plus smooth random perturbations; lognormal density."""
+    """Mean field along x plus smooth random perturbations; lognormal density.
+
+    The perturbation is divergence-free (curl of a random vector potential, spectral
+    derivatives), with rms db per component on average, so dB/B0 ~ sqrt(3) db / b0 as
+    before.  HW10 review: up to HW9 the three components were independent random fields
+    (div B != 0), which made the server's div-B label check meaningless on the sample.
+    """
     rng = np.random.default_rng(seed)
     k = np.fft.fftfreq(n)
     kk = np.sqrt(k[:, None, None]**2 + k[None, :, None]**2 + k[None, None, :]**2)
@@ -62,7 +70,20 @@ def fake_cube(n=64, b0=1.0, db=0.3, seed=0):
         return f / f.std()
 
     rho = np.exp(0.5 * field())
-    B = {"x": b0 + db * field(), "y": db * field(), "z": db * field()}
+    # B = curl A in Fourier space: exactly divergence-free on the periodic grid
+    kz, ky, kx = np.meshgrid(k, k, k, indexing="ij")        # array axes (z, y, x)
+    A = {c: np.fft.fftn(field()) / (2 * np.pi * kk) for c in "xyz"}     # Hermitian: curl is real
+    nyq = (np.abs(kx) == 0.5) | (np.abs(ky) == 0.5) | (np.abs(kz) == 0.5)
+    for c in "xyz":                  # no mean and no Nyquist modes (their derivative is not real)
+        A[c][0, 0, 0] = 0.0
+        A[c][nyq] = 0.0
+    j2pi = 2j * np.pi
+    dB = {"x": np.real(np.fft.ifftn(j2pi * (ky * A["z"] - kz * A["y"]))),
+          "y": np.real(np.fft.ifftn(j2pi * (kz * A["x"] - kx * A["z"]))),
+          "z": np.real(np.fft.ifftn(j2pi * (kx * A["y"] - ky * A["x"])))}
+    scale = db / np.sqrt(np.mean([dB[c].var() for c in "xyz"]))
+    B = {c: scale * dB[c] for c in "xyz"}
+    B["x"] = B["x"] + b0
     return rho, B
 
 
@@ -112,11 +133,18 @@ def gamma_from_p(p, p0):
     return np.degrees(np.arccos(np.sqrt(cos2)))
 
 
-def kde_peak(values, max_n=20000, seed=0):
-    """Most probable value via Gaussian KDE (Scott's rule) on a 0-90 deg grid."""
+def kde_peak(values, max_n=None, seed=0):
+    """Most probable value via Gaussian KDE (Scott's rule) on a 0-90 deg grid.
+
+    Uses every finite value.  HW10 review: up to HW9 the default was max_n=20000, a random
+    subsample (seed 0) that every 256^2 map triggered; changing the seed moved estimates by
+    0.7-0.9 deg on a synthetic cube (review_checks_alexis.py, section A), more than the
+    answer key's 0.5 deg tolerance.  A full KDE of 65 536 pixels
+    takes about 0.4 s.  max_n=<int> restores subsampling (with ``seed``) if ever needed.
+    """
     v = np.asarray(values).ravel()
     v = v[np.isfinite(v)]
-    if v.size > max_n:
+    if max_n is not None and v.size > max_n:
         v = np.random.default_rng(seed).choice(v, max_n, replace=False)
     if v.size < 10 or np.ptp(v) == 0:
         return float(np.median(v)) if v.size else np.nan
@@ -131,17 +159,21 @@ def true_gamma_B(B, los_axis):
     return float(np.degrees(np.arccos(np.hypot(m1, m2) / np.sqrt(m1**2 + m2**2 + ml**2))))
 
 
-def estimate_from_maps(Q, U, p, cos2g_2d, truth, p0_true=P0_TRUE, mask_border=False):
+def estimate_from_maps(Q, U, p, cos2g_2d, truth, p0_true=P0_TRUE, mask_border=False,
+                       pmax_percentile=None):
     """Chen et al. 2019 estimator applied to a finished set of maps.
 
     mask_border=True drops the outer ring of pixels from the S selection; use it
     for rotated maps, whose edges are not periodic.
+    pmax_percentile: percentile of p taken as p_max (100 = map maximum, the pre-registered
+    rule).  None falls back to the module setting PMAX_PERCENTILE (99.5 unless changed).
     """
+    pct = PMAX_PERCENTILE if pmax_percentile is None else float(pmax_percentile)
     S = dispersion_S(Q, U)
     if mask_border:
         S[0, :] = S[-1, :] = S[:, 0] = S[:, -1] = np.nan
 
-    pmax = float(np.percentile(p, PMAX_PERCENTILE))
+    pmax = float(np.percentile(p, pct))
     p0_derived = 3 * pmax / (3 + pmax)                       # Chen eq. 9
 
     g_obs = gamma_from_p(p, p0_derived)

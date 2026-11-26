@@ -76,3 +76,21 @@ def test_true_tilts_slightly_off_nominal_still_count():
     true = [0.01, 15.02, 30.03, 45.01, 59.98, 75.0, 89.97]
     r = grade(true, true)
     assert r["n_maps"] == 3
+
+
+def test_grade_with_ci_brackets_the_point_grade():
+    """HW10: bootstrap CI contains the point values; p_pass in [0, 1]; deterministic."""
+    from evaluate import grade_with_ci
+    rng = np.random.default_rng(1)
+    t = np.repeat(np.arange(30, 61, 5.0), 3)
+    e = t + rng.normal(0, 4, t.size)
+    groups = np.tile(["t800", "t850", "t900"], 7)
+    a = grade_with_ci(t, e, groups=groups)
+    b = grade_with_ci(t, e, groups=groups)
+    assert a == b
+    assert a["median_abs_err_ci"][0] <= a["median_abs_err"] <= a["median_abs_err_ci"][1]
+    assert a["slope_ci"][0] <= a["slope"] <= a["slope_ci"][1]
+    assert 0.9 <= a["p_pass"] <= 1.0 and a["PASS"]
+    assert set(a["median_signed_err_by_group"]) == {"t800", "t850", "t900"}
+    flat = grade_with_ci(t, np.full(t.size, 50.0) + rng.normal(0, 1, t.size))
+    assert flat["p_pass"] < 0.05                      # a constant guess is caught

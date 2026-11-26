@@ -37,7 +37,10 @@ Check any ID, the inputs, the input files' SHA-256 fingerprints and the call ord
 
 Data access is read-only: results.db is opened read-only and FITS files are only read,
 and only from inside the project folder (plus folders listed in $CATS_ALLOWED_DIRS).
-The only file the server writes is the audit log.
+The server writes two files: the signed audit log above, and (HW10) a plain JSON-lines
+tool-call log for debugging, logs/mcp_server_alexis.jsonl (or $CATS_TOOL_LOG): one line
+per call with timestamp, tool, sanitised inputs, output summary, elapsed ms and status,
+cross-referenced to the audit log by verification_id.  See obs_logging_alexis.py.
 """
 
 import contextvars
@@ -71,6 +74,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import firstmap_b as fm                      # noqa: E402
+import obs_logging_alexis as obs             # noqa: E402  HW10 tool-call log
 import rotate_maps as rm                     # noqa: E402
 from evaluate import grade                   # noqa: E402
 from prepare_arepo import match_components   # noqa: E402
@@ -91,7 +95,14 @@ ERROR_CODES = {
     "INTERNAL_ERROR": "an unexpected exception inside a tool (reported, not crashed)",
 }
 CATS_BASE_URL = "https://users.flatironinstitute.org/~bburkhart/data/CATS/"
-ORDERED_FIELD_LIMIT = 1.0    # dB/B0 below this: ordered field dominates (tested 0.1-0.64 pass, 4.4-5.8 fail)
+ORDERED_FIELD_LIMIT = 1.0    # dB/B0 below this: ordered field dominates (tested 0.51-0.64 pass, 4.4-5.8 fail)
+# PHYSICS_REVIEW_alexis.md, finding 1: a field can also be TOO ordered.  With little dispersion
+# no sightline lies near the plane of the sky, so p_max < p0/(1 - p0/3), the derived p0 is too
+# small and every tilt comes out too LOW, more so at larger tilt.  Tested: AREPO B100
+# (dB/B0 = 0.12) -6/-9/-14 deg at 30/45/60 (passes only just), my Athena++ run (0.21)
+# -12/-19/-23 deg (fails).  Runs at 0.51-0.64 pass.  0.21-0.51 is untested; the limit is
+# placed inside that gap.
+LOW_DISPERSION_LIMIT = 0.35
 CATS_FOLDER_RE = re.compile(r"^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*/$")
 
 
@@ -154,6 +165,9 @@ CHEN = {
     },
     "note": "Table A1 errors are relative to nominal tilts 0/30/60/90; Chen's true tilts "
             "differ by up to a few degrees (their Table 3).",
+    "p0_note": "Chen et al. built their synthetic maps with p0 = 0.1 (Table A1 caption); this "
+               "project's maps use p0 = 0.15 (King et al. 2018). The estimator derives p0 from "
+               "p_max, so the effect is second order, but the comparison is not like for like.",
 }
 
 INSTRUCTIONS = """\
@@ -177,6 +191,11 @@ polarization (Chen et al. 2019) and tests it on public MHD simulations. When ans
 
 mcp = MCPServer("cats-tilt", instructions=INSTRUCTIONS, version="1.0.0")
 
+# HW10 reproducibility: seed the global generators (random.seed(42), numpy.random.seed(42)).
+# The tools themselves draw no random numbers except the fixed-seed KDE subsample in
+# firstmap_b.kde_peak; SESSION below is deliberately random (it names verification IDs).
+SEEDS = obs.seed_everything(42)
+
 
 # ================================================================ verification
 def base_dir():
@@ -185,6 +204,11 @@ def base_dir():
 
 def audit_path():
     return Path(os.environ.get("CATS_AUDIT_LOG", base_dir() / "audit_log.jsonl"))
+
+
+def tool_log_path():
+    """HW10 JSON-lines tool-call log (unsigned, for debugging; the audit log is the record)."""
+    return Path(os.environ.get("CATS_TOOL_LOG", base_dir() / "logs" / "mcp_server_alexis.jsonl"))
 
 
 def key_path():
@@ -223,7 +247,12 @@ def log_call(tool, inputs, outputs, error):
 
 
 def receipted(fn):
-    """Sign and log every call; add verification_id and call_number to the reply."""
+    """Sign and log every call; add verification_id and call_number to the reply.
+
+    HW10: every call also writes one JSON line to ``tool_log_path()`` (timestamp, tool,
+    sanitised inputs, output summary, elapsed ms, success/failure, error code, and the
+    verification_id that links it to the signed audit log).
+    """
     sig = inspect.signature(fn)
 
     @functools.wraps(fn)
@@ -232,22 +261,29 @@ def receipted(fn):
         ba.apply_defaults()
         inputs = dict(ba.arguments)
         token = _files_used.set([])
+        obs.configure("mcp_server", log_file=tool_log_path(), project_root=base_dir())
         try:
-            try:
-                out = fn(*args, **kwargs)
-            except ToolError as e:
-                code, msg = getattr(e, "code", "INVALID_INPUT"), getattr(e, "message", str(e))
-            except Exception as e:                       # unexpected: report, don't crash
-                code, msg = "INTERNAL_ERROR", f"{type(e).__name__}: {e}"
-            else:
-                code = None
-            if code is not None:
-                vid, _ = log_call(fn.__name__, inputs, None, {"code": code, "message": msg})
-                raise ToolError(json.dumps({"error": {"code": code, "message": msg,
-                                                      "tool": fn.__name__,
-                                                      "verification_id": vid}}))
-            vid, n = log_call(fn.__name__, inputs, out, None)
-            return {"verification_id": vid, "call_number": n, **out}
+            with obs.span(f"mcp.{fn.__name__}", inputs) as sp:
+                try:
+                    out = fn(*args, **kwargs)
+                except ToolError as e:
+                    code, msg = getattr(e, "code", "INVALID_INPUT"), getattr(e, "message", str(e))
+                except Exception as e:                       # unexpected: report, don't crash
+                    code, msg = "INTERNAL_ERROR", f"{type(e).__name__}: {e}"
+                else:
+                    code = None
+                if code is not None:
+                    vid, _ = log_call(fn.__name__, inputs, None, {"code": code, "message": msg})
+                    sp.extra.update(verification_id=vid, error_code=code,
+                                    files=obs.summarize(_files_used.get() or []))
+                    raise ToolError(json.dumps({"error": {"code": code, "message": msg,
+                                                          "tool": fn.__name__,
+                                                          "verification_id": vid}}))
+                vid, n = log_call(fn.__name__, inputs, out, None)
+                reply = {"verification_id": vid, "call_number": n, **out}
+                sp.output = reply
+                sp.extra.update(verification_id=vid, files=obs.summarize(_files_used.get() or []))
+                return reply
         finally:
             _files_used.reset(token)
     return wrapper
@@ -500,7 +536,10 @@ def uncertainty_block(main, alt, pct_alt):
         "this_estimate_rough_uncertainty_deg": out["low_S"]["rough_combined_deg"]}
     caveats = ["Synthetic maps assume optically thin emission and uniform grain alignment.",
                "One map cannot tell an ordered tilted field from a disordered field: in this "
-               "project's weak-field runs the estimate stays near 45-58 deg at every tilt."]
+               "project's weak-field runs the estimate stays near 45-58 deg at every tilt.",
+               "In very ordered fields (dB/B0 below about 0.35) p_max underestimates p0, so the "
+               "tilt is underestimated; the polarization-angle dispersion S does not reveal this "
+               "regime (it overlaps with the passing runs), so for Stokes maps it cannot be flagged."]
     if out["low_S"]["project_calibration"].get("could_be_disordered_field"):
         caveats.insert(0, "This estimate lies inside the range returned by this project's "
                           "failing (disordered-field) runs, so it may not reflect the true tilt.")
@@ -539,17 +578,39 @@ def cube_checks(B):
 
 
 def regime(dB_B0):
-    """This project's finding: the estimator works when the ordered field dominates
-    (dB/B0 = 0.1-0.64 in all four runs tested) and fails when turbulence dominates
-    (dB/B0 = 4.4-5.8); values in between were not tested."""
-    if dB_B0 < ORDERED_FIELD_LIMIT:
-        return {"dB_over_B0": rnd(dB_B0, 3), "ordered_field_dominates": True,
-                "note": "ordered field dominates: the regime where the estimator worked in this "
-                        "project's tests (dB/B0 = 0.1-0.64)"}
-    return {"dB_over_B0": rnd(dB_B0, 3), "ordered_field_dominates": False,
-            "note": f"the turbulent field is {dB_B0:.1f} times the mean field: in this project's "
-                    "tests (dB/B0 = 4.4-5.8) the estimator failed, staying near 45-58 deg whatever "
-                    "the true tilt; treat this estimate as unreliable"}
+    """This project's finding (six runs): the estimator works in a window of moderate
+    dispersion and fails on both sides of it.
+
+      dB/B0 >= 1      turbulence dominates: estimates stay near 45-58 deg whatever the
+                      true tilt (b.1p1, b.1p.01: dB/B0 = 4.4-5.8).            -> unreliable
+      dB/B0 < 0.35    the field is so ordered that no sightline lies near the plane of the
+                      sky: p_max underestimates p0 and the tilt comes out too low, the more
+                      so the larger the tilt (AREPO B100 0.12: -14 deg at 60; Athena++ 0.21:
+                      -19 deg at 45).  The estimate is then roughly a LOWER BOUND.
+                                                                              -> biased_low
+      in between      passed in all three runs tested (dB/B0 = 0.51-0.64).   -> reliable
+    0.21-0.51 and 0.64-4.4 are untested.  ``ordered_field_dominates`` keeps its meaning
+    (dB/B0 < 1) for clients that read it.
+    The low-dispersion limit is stated by Chen et al. (2019), Appendix A (p_max "may be
+    significantly below the intrinsic maximum" for well-ordered fields); they found their
+    least-perturbed model still accurate, which this project's runs do not reproduce.
+    """
+    base = {"dB_over_B0": rnd(dB_B0, 3), "ordered_field_dominates": dB_B0 < ORDERED_FIELD_LIMIT}
+    if dB_B0 >= ORDERED_FIELD_LIMIT:
+        return {**base, "reliability": "unreliable",
+                "note": f"the turbulent field is {dB_B0:.1f} times the mean field: in this project's "
+                        "tests (dB/B0 = 4.4-5.8) the estimator failed, staying near 45-58 deg whatever "
+                        "the true tilt; treat this estimate as unreliable"}
+    if dB_B0 < LOW_DISPERSION_LIMIT:
+        return {**base, "reliability": "biased_low",
+                "note": f"the field is very ordered (dB/B0 = {dB_B0:.2f} < {LOW_DISPERSION_LIMIT}): "
+                        "no sightline lies near the plane of the sky, so p_max underestimates p0 and "
+                        "the tilt is underestimated, more at larger tilts (this project: -14 deg at "
+                        "60 deg for dB/B0 = 0.12, -19 deg at 45 deg for dB/B0 = 0.21). Treat the "
+                        "estimate as a lower bound on the tilt"}
+    return {**base, "reliability": "reliable",
+            "note": "moderate field dispersion: the regime where the estimator worked in this "
+                    "project's tests (dB/B0 = 0.51-0.64, three runs)"}
 
 
 # ================================================================ tool: external CATS archive
@@ -709,7 +770,7 @@ def estimate_tilt_from_cubes(density: _fits_arg("3-D gas density cube"),
     w = []
     if not checks["divB_labels_consistent"] or checks["anisotropy_consistent"] is False:
         w.append("field-label checks disagree: Bx/By/Bz may be mislabelled, so the tilt may be wrong")
-    if not out["field_regime"]["ordered_field_dominates"]:
+    if out["field_regime"]["reliability"] != "reliable":
         w.append(out["field_regime"]["note"])
         out["uncertainty"]["caveats"].insert(0, out["field_regime"]["note"])
     if w:

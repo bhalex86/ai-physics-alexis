@@ -45,3 +45,9 @@ cache/maps/
 # notebook backups and local backup copies
 *.ipynb.bak*
 _backup_before_claude/
+
+# --- HW10 observability: per-machine JSON tool-call logs (regenerated on every run).
+# The log of the run that produced the committed result is kept: results/*.jsonl is not ignored.
+logs/
+.repro/
+.scratch/

@@ -19,7 +19,15 @@ Options:
 How it works
 ------------
 Instead of rotating the cube itself, each sightline is traced through the box
-along a tilted direction, sampling the cube with trilinear interpolation.
+along a tilted direction.  The magnetic field is sampled with cubic B-spline
+interpolation (order 3, periodic, prefiltered once per map); the density with
+trilinear interpolation.  HW10 review: trilinear sampling of B smoothed the field
+at intermediate tilts but not at 0 and 90 deg (grid points), lowering S there by
+8-22 % on a rough test cube; the cubic spline interpolates (exact at grid
+points) and cuts that to 4-6 %.  Density stays trilinear because a cubic
+spline overshoots below zero next to sharp peaks (11.5 % of samples for a lognormal
+field with max/mean ~ 1000) and log-density interpolation loses mass (10 %), while
+trilinear sampling is positive and conserves the mean.
 The box is periodic, so sightlines wrap around its edges. At every sample the
 field vector is projected onto the new sky axes (s1, s2) and line of sight (l).
 At 0 deg and 90 deg the samples land exactly on grid cells, so the results
@@ -35,7 +43,7 @@ import os
 import time
 
 import numpy as np
-from scipy.ndimage import map_coordinates
+from scipy.ndimage import map_coordinates, spline_filter
 
 import firstmap_b as fm
 from evaluate import grade
@@ -67,8 +75,18 @@ def frame(theta_deg, field_ax, perp_ax):
     return s1, s2, l
 
 
-def rotated_maps(rho, B, theta_deg, field_ax, perp_ax, p0=fm.P0_TRUE, order=1):
-    """N, Q, U, p and density-weighted cos^2(gamma) for a tilted line of sight."""
+INTERP_ORDER = 3     # cubic B-spline (HW10); 1 = the trilinear sampling used up to HW9
+
+
+def rotated_maps(rho, B, theta_deg, field_ax, perp_ax, p0=fm.P0_TRUE, order=None, offset=0.0):
+    """N, Q, U, p and density-weighted cos^2(gamma) for a tilted line of sight.
+
+    order: spline order of the sampling of B (default INTERP_ORDER = 3; 1 = trilinear).
+    offset: shift of every sample point by this many cells along x, y and z (default 0).
+        Used only by review_checks_alexis.py: offset 0.5 forces interpolation even at 0
+        and 90 deg, which isolates the smoothing that interpolation causes.
+    """
+    order = INTERP_ORDER if order is None else int(order)
     n = rho.shape[0]
     if rho.shape != (n, n, n):
         raise ValueError(f"cube must be n x n x n, got {rho.shape}")
@@ -77,17 +95,21 @@ def rotated_maps(rho, B, theta_deg, field_ax, perp_ax, p0=fm.P0_TRUE, order=1):
     c = (n - 1) / 2.0
     offs = np.arange(n) - c
     UU, VV = np.meshgrid(offs, offs, indexing="ij")          # map pixel (u, v)
-    base = c + UU[None] * s1[:, None, None] + VV[None] * s2[:, None, None]
+    base = c + offset + UU[None] * s1[:, None, None] + VV[None] * s2[:, None, None]
 
     N = np.zeros((n, n)); Q = np.zeros((n, n)); U = np.zeros((n, n))
     N2 = np.zeros((n, n)); W = np.zeros((n, n))
     fields = (rho, B["x"], B["y"], B["z"])
+    if order > 1:                    # B only; prefilter once, not once per sightline step
+        fields = (rho,) + tuple(spline_filter(np.asarray(f, dtype=np.float64), order=order,
+                                              mode="grid-wrap") for f in fields[1:])
 
     for w in offs:                                            # step along the sightline
         P = base + w * l[:, None, None]                       # positions in (x, y, z)
         coords = [P[2], P[1], P[0]]                           # numpy axis order (z, y, x)
-        r, bx, by, bz = (map_coordinates(f, coords, order=order, mode="grid-wrap")
-                         for f in fields)
+        r = map_coordinates(fields[0], coords, order=1, mode="grid-wrap")      # density: linear
+        bx, by, bz = (map_coordinates(f, coords, order=order, mode="grid-wrap",
+                                      prefilter=False) for f in fields[1:])
         b1 = s1[0] * bx + s1[1] * by + s1[2] * bz
         b2 = s2[0] * bx + s2[1] * by + s2[2] * bz
         bl = l[0] * bx + l[1] * by + l[2] * bz

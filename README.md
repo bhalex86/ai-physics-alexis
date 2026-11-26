@@ -6,6 +6,66 @@ The server does the physics; the LLM calls the tools, can read the code behind t
 
 Part of the PHYS 7440 project *Testing a dust-polarization estimator of magnetic-field inclination in public MHD simulations* (B. Alexis). The design is in `design_alexis.md`.
 
+
+## For reviewers (start here)
+
+Branch `week10observability`. Each peer-review question, and where it is answered:
+
+| Question | Where to look | One command |
+|---|---|---|
+| 1. Can I reproduce the main result from the README alone? | [Key result](#key-result-hw10) below: figure, table and the run's log in `results/` | `pip install -r requirements.txt && make result`, then `make check-reproducible` (compares with the committed files) |
+| 2. Are random seeds and API keys handled correctly? | [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) lists every source of randomness; keys are in `.env` / `~/.cats_mcp_key`, git-ignored, and never logged (redacted in the JSON logs, tested in `test_observability_alexis.py`) | `make test` (110 offline tests) |
+| 3. Is every quantitative claim traceable to a specific output? | Result numbers come from `results/tilt_recovery_grades_alexis.md` (made from `cache/pipeline_cache_alexis.db`, whose hash `--verify` checks). Numbers in the review documents carry a section label in [`results/review_checks_alexis.txt`](results/review_checks_alexis.txt). Every MCP answer carries a signed verification ID (`verify.py`). | `make review-checks`, `python data_pipeline_alexis.py --verify` |
+| 4. Is AI tool use documented? | [`AI_USE.md`](AI_USE.md) | none |
+
+Also: [`BUG_LOG.md`](BUG_LOG.md) (bugs found and fixed), [`PHYSICS_REVIEW_alexis.md`](PHYSICS_REVIEW_alexis.md) (the physics checked against Chen et al. 2019), and `python trace_alexis.py <log>` (rebuilds the call tree of any run from its JSON log). Known open item: the CATS numbers still come from the pre-HW10 method until `make rebuild` is run where the data are (see the note under Key result).
+
+---
+
+## Key result (HW10)
+
+![Estimated vs true tilt for five runs](results/tilt_recovery_alexis.png)
+
+**Pre-registered analysis** (the proposal's seven viewing angles, one snapshot per run): **the Chen et al. (2019) estimator recovers the field tilt in both ordered-field CATS runs (b1p1, b1p.01: median |error| 1.9°, slope 0.75–0.81, PASS).** In the two turbulence-dominated runs (δB/B₀ = 4.4 and 5.8), it returns 48–55° whatever the true tilt (slope ≈ 0.04, FAIL). My 64³ Athena++ run fails in the other direction: its field is so ordered (δB/B₀ = 0.21) that no sightline lies near the plane of the sky. p_max then underestimates p₀, and the tilt comes out 19° too low at 45°. With the true p₀ the same maps give 43°. So the method works in a window of moderate dispersion, not simply "whenever the field is ordered" (`PHYSICS_REVIEW_alexis.md`, finding 1). Low-S estimator, p_max = map maximum (the pre-registered rule), graded by `evaluate.py` over true tilts of 30–60°. The full table is in [`results/tilt_recovery_grades_alexis.md`](results/tilt_recovery_grades_alexis.md).
+
+> **Pending rebuild.** The method changed in the HW10 review: cubic sampling of B, a KDE on every pixel, 5° tilts, three snapshots per CATS run, and bootstrap intervals. The figure and table above are graded and drawn by the new code, but from the **old-method cache** (7 tilts, one snapshot per run). The CATS archive was not reachable where the change was made. To recompute everything: `make rebuild` (= `python rebuild_alexis.py --plant-failures`, see `PHYSICS_REVIEW_alexis.md`). On the Athena++ run, the only one rebuilt so far, the estimates moved by at most 0.1°.
+
+**Reproduce it from a fresh clone with one command** (about 5 s; no data download):
+
+```bash
+git clone https://github.com/bhalex86/ai-physics-alexis.git && cd ai-physics-alexis
+git checkout week10observability
+python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+make result
+```
+
+`make result` runs two steps. First, `python data_pipeline_alexis.py --verify` checks the committed cache against the hash in `provenance_alexis.json`, and fails if the cache was edited. Second, `python make_key_result_alexis.py` grades every run and writes:
+
+| File | Content |
+|---|---|
+| `results/tilt_recovery_alexis.png` | the figure above |
+| `results/tilt_recovery_grades_alexis.csv` / `.md` | grade per run × estimator × p_max rule |
+| `results/tilt_recovery_points_alexis.csv` | every plotted point |
+| `results/key_result_run_alexis.jsonl` | **the JSON log of the run that produced the committed files** |
+
+`make check-reproducible` runs it twice and compares the two runs, and then compares the outputs with the versions committed in git (tables byte for byte, the figure pixel by pixel). `make trace` prints the call tree of the committed run from its log. The cache itself comes from `make pipeline` (`data_pipeline_alexis.py --fetch --build --verify --all`), which downloads about 1 GB from CATS.
+
+## Observability and reproducibility (HW10)
+
+**Every tool call writes one JSON line**, using `python-json-logger` through one shared module, `obs_logging_alexis.py`. Each line has: `timestamp` (ISO-8601 UTC), `tool`, `input_args` (API keys and tokens redacted, arrays summarised as shape + dtype, local paths made relative), `output_summary` (a structured summary) and `output_preview` (its first 200 characters), `elapsed_ms`, `status` (`success` / `failure`), and `error_type` / `error_message`. `run_id`, `seq`, `parent_seq` and `depth` rebuild the call tree. Each run also logs a `run_start` line (command, seeds, package versions, git commit) and a `run_end` line (number of calls and failures).
+
+| Component | What counts as a tool call | Log file |
+|---|---|---|
+| `data_pipeline_alexis.py` | every HTTP attempt and download attempt, the GitHub API call, reading CATS / Athena++ files, the cube checks, normalisation, each `rotate_maps.rotated_maps` and `firstmap_b.estimate_from_maps` call (per angle and p_max rule), cache writing, hashing, CSV export, and each command. Retries and missing fields go into the same log, under the call they happened in. | `logs/pipeline_alexis.jsonl` |
+| `mcp_server_alexis.py` | every MCP tool (all 13), with its `verification_id` and error code, so each line matches its entry in the signed `audit_log.jsonl` | `logs/mcp_server_alexis.jsonl` (`CATS_TOOL_LOG`) |
+| `hw8/eval_harness.py` | every `anthropic.messages.create` request (model, temperature, the reply's text and tool calls, token use) and every MCP tool call the harness makes; the scored result of each item. The server it starts logs to its own file, linked by `parent_run_id`. | `logs/eval_harness_alexis.jsonl` |
+| `hw8/make_ground_truth.py` | loading the cubes and each estimator call | `logs/make_ground_truth_alexis.jsonl` |
+| `make_key_result_alexis.py` | reading the cache, grading, writing the tables and the figure | `results/key_result_run_alexis.jsonl` (via `make result`) |
+
+Every script takes `--log-file`, or the environment variable `OBS_LOG_FILE`. Logs under `logs/` stay on each machine (`.gitignore`); only the log of the committed result is in the repository. To read a log: `python trace_alexis.py <log> [--args] [--failures]`. `hw8/score_desktop.py` makes no tool calls of its own: Claude Desktop calls the MCP server, which logs them.
+
+**Seeds and randomness:** [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md). Every entry point runs `random.seed(42)` and `numpy.random.seed(42)` first, LLM calls use `temperature=0`, and the file lists every other source of randomness and how it is controlled. **Bugs found and fixed:** [`BUG_LOG.md`](BUG_LOG.md). **Physics review** (every equation checked against Chen et al. 2019, plus measured systematics): [`PHYSICS_REVIEW_alexis.md`](PHYSICS_REVIEW_alexis.md). **Tests:** `make test` (all offline). New in HW10: `test_observability_alexis.py`, which covers the log fields, key redaction, the call tree, an identical pipeline rerun, and the LLM harness with a fake client at temperature 0.
+
 ---
 
 ## 1. Quick start from scratch
@@ -17,7 +77,7 @@ git clone <this repository's URL> && cd <repository folder>
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python make_sample_data.py                     # writes sample_project/ (4 MB, ~5 s)
-pytest test_mcp_server_alexis.py -v            # 28 passed, 1 skipped
+pytest test_mcp_server_alexis.py -v            # 31 passed, 1 skipped
 CATS_PROJECT_DIR=sample_project python mcp_server_alexis.py   # starts; waits for a client on stdio
 ```
 
@@ -35,6 +95,7 @@ This sequence was checked in a fresh virtual environment containing only the ser
 - `numpy`, `scipy`, `astropy`, `pandas`
 - `certifi`: needed on macOS with python.org Python to verify HTTPS certificates
 - `pytest`, `jsonschema`: for the tests
+- `python-json-logger`: the JSON tool-call log (HW10)
 
 **All of these files must be in one folder:**
 
@@ -48,11 +109,12 @@ This sequence was checked in a fresh virtual environment containing only the ser
 | `build_db.py` | builds `results.db` from result CSVs |
 | `make_sample_data.py` | builds the from-scratch sample project |
 | `verify.py` | checks verification IDs |
+| `obs_logging_alexis.py` | JSON tool-call log and seeds (HW10) |
 | `test_mcp_server_alexis.py` | tests |
 | `requirements.txt` | dependencies |
 | `design_alexis.md` | design document |
 
-> **The server is not a single self-contained file.** `mcp_server_alexis.py` imports `firstmap_b.py`, `rotate_maps.py`, `evaluate.py` and `prepare_arepo.py`. Without them in the same folder it stops at startup with `ModuleNotFoundError`.
+> **The server is not a single self-contained file.** `mcp_server_alexis.py` imports `firstmap_b.py`, `rotate_maps.py`, `evaluate.py`, `prepare_arepo.py` and (since HW10) `obs_logging_alexis.py`. Without them in the same folder it stops at startup with `ModuleNotFoundError`.
 
 ### What is in this repository, and what is not
 
@@ -66,10 +128,9 @@ Besides the server files above, the repository holds the rest of the analysis pi
 | `monte_carlo.py` | reproduces the Monte Carlo test of Chen et al. (2019), Table 1 |
 | `test_evaluate.py` | tests of the grading criteria |
 | `make_comparison_pdf.py` | builds the one-page comparison with Chen et al. |
-| `stageAB_results.csv`, `stageAB_grades.csv` | the project's results: 6 runs × 7 tilts × 2 p_max rules, and their grades |
-| `turbulence.csv` | measured turbulence properties of each run |
-| `runs.json` | the runs and snapshots used |
 | `.gitignore` | keeps the files below out of the repository |
+
+> **Not yet in the repository (HW10 review):** earlier versions of this table listed `stageAB_results.csv`, `stageAB_grades.csv`, `turbulence.csv` and `runs.json` as committed, but none of them is on any branch. Without them, `build_db.py --results stageAB_results.csv` cannot run from a clone, and the stored-result tools have no data for the six project runs. Until they are committed, use the pipeline's export for the five runs it covers: `python build_db.py --results cache/results_rotated.csv`. That export has no AREPO runs and no `turbulence.csv`. Regenerate `turbulence.csv` with the corrected `measure_turbulence.py`, because its `M_A` changed (`PHYSICS_REVIEW_alexis.md`, finding 2).
 
 Some files are deliberately **not** committed. Each is either downloadable, generated, or private:
 
@@ -162,8 +223,8 @@ Verification IDs and timestamps differ on every run; the other values are what y
  "runs": [{"run_id": "sample_run", "code": "synthetic", "gravity": false, "snapshot": "seed 0",
            "description": "synthetic 64^3 turbulent cube, mean field along x (not a CATS simulation)",
            "cube_files_present": true,
-           "stored_results": {"max": [0.0, 15.0, 30.0, 45.0, 60.0, 75.0, 90.0],
-                              "p99.5": [0.0, 15.0, 30.0, 45.0, 60.0, 75.0, 90.0]}}]}
+           "stored_results": {"max": [0.0, 5.0, 10.0, "...", 85.0, 90.0],
+                              "p99.5": [0.0, 5.0, 10.0, "...", 85.0, 90.0]}}]}
 ```
 
 **`lookup_result`** (sample project), with `{"run_id": "sample_run", "angle": 45}`:
@@ -290,7 +351,7 @@ done
 ## 10. Tests
 
 ```bash
-pytest test_mcp_server_alexis.py -v                      # 28 passed, 1 skipped, ~2 s
+pytest test_mcp_server_alexis.py -v                      # 31 passed, 1 skipped, ~5 s
 CATS_LIVE=1 pytest test_mcp_server_alexis.py -k live     # also call the real CATS archive
 ```
 
@@ -305,7 +366,7 @@ The tests run on a small fake project in a temporary folder, with a temporary ke
 
 ## 11. Live demo (Meeting 2)
 
-1. Run `pytest test_mcp_server_alexis.py -q` and show 28 passed.
+1. Run `pytest test_mcp_server_alexis.py -q` and show 31 passed.
 2. In Claude Desktop, show that the `cats-tilt` tools are listed.
 3. A successful call: *"List the snapshots of CATS run b1p1, then estimate the tilt of the b1p1 t_900 cubes viewed at 45°, with its uncertainty compared to Chen. Show me the code that turns p into the tilt, and list the tools you used, in order."*
 4. An error case: *"Look up the stored result for sample_run at 120 degrees."* It returns `INVALID_INPUT`.
@@ -313,8 +374,8 @@ The tests run on a small fake project in a temporary folder, with a temporary ke
 
 ## 12. Known failure modes
 
-- **Turbulence-dominated fields.** When the turbulent field outweighs the mean field, the estimate stays near 45–58° whatever the true tilt. For cubes the server measures δB/B₀ and warns above 1. This project's runs passed at δB/B₀ = 0.1–0.64 and failed at 4.4–5.8; values in between are untested. For Stokes maps δB/B₀ is unknown, so only estimates in the failing range are flagged.
-- **Very ordered fields.** p₀ is then set by the few most polarized pixels, so the result depends on `pmax_percentile`. The `pmax_rule_sensitivity` component reports how much.
+- **Turbulence-dominated fields.** When the turbulent field outweighs the mean field, the estimate stays near 45–58° whatever the true tilt. For cubes the server measures δB/B₀ and warns above 1. This project's runs passed at δB/B₀ = 0.51–0.64 and failed at 4.4–5.8; values in between are untested. Very ordered fields fail in the other direction (next item). For Stokes maps δB/B₀ is unknown, so only estimates in the failing range are flagged.
+- **Very ordered fields (tilt underestimated).** When δB/B₀ is small, no sightline lies near the plane of the sky. p_max then falls below p₀/(1 − p₀/3), the derived p₀ is too small, and the tilt comes out too **low**, by more at larger tilts. In this project: AREPO B100 (δB/B₀ = 0.12) gave −6/−9/−14° at 30/45/60° and only just passes; my Athena++ run (0.21) gave −12/−19/−23° and fails. The derived p₀ can never exceed the true p₀, so here the estimate is roughly a lower bound. For cubes the server reports `reliability: "biased_low"` below δB/B₀ = 0.35 (0.21–0.51 is untested). The polarization-angle dispersion S overlaps between these runs and the passing ones, so for Stokes maps this regime cannot be flagged. See `PHYSICS_REVIEW_alexis.md`, finding 1.
 - **Idealized maps.** They assume optically thin emission and uniform grain alignment, with no noise or telescope beam. `estimate_tilt_from_stokes` does not de-bias noisy observations.
 - **Mislabelled field files** give a wrong tilt. The ∇·B check runs on every cube; the anisotropy check runs only when the ordered field dominates. A warning is added if either fails.
 - **File names.** Names must end in `.fits` or `.fits.gz`. Some uploads rename `magx_t750.fits.gz` to `magx_t750_fits.gz`, which is rejected; rename it back.
@@ -433,7 +494,7 @@ hashes side by side.
 ### Tests and notebook
 
 ```bash
-ATHDF=data/athena/Turb.out2.00050.athdf pytest test_data_pipeline_alexis.py -v   # 27 offline tests: a fake local server injects 503, 429, 404, a hang,
+ATHDF=data/athena/Turb.out2.00050.athdf pytest test_data_pipeline_alexis.py -v   # 28 offline tests: a fake local server injects 503, 429, 404, a hang,
                                                                    # cut-off downloads and GitHub 403s; plus sentinels, refusals (NaN, bad
                                                                    # grid, corrupt files), rerun hash, tamper detection and build_db.py
 jupyter notebook lab_notebook_alexis.ipynb                         # Restart & Run All after the pipeline has run
@@ -455,6 +516,8 @@ The proposal PDF is kept as submitted; these are the deviations, with the date e
 | Stage B: AREPO runs with gravity off and on | Two AREPO runs were analysed in Week 8 (`hw8/physics_check_alexis.csv`) but are not in this pipeline yet | open |
 | Data: CATS Cho-ENO, AREPO, optional TIGRESS | Added an Athena++ run of my own (64³, sub-Alfvénic, M_A ≈ 0.4) as a controlled ordered-field case; TIGRESS not used | HW9 |
 | MCP server as drawn in the Week 7 architecture map | Changed while it was built; see `architecture_update_alexis.md` | Week 7–9 |
+| "Rotating each cube to seven viewing angles"; one snapshot per run (Table 1: 4 runs × 7 angles = 28 maps) | **Kept as the headline result** ("Pre-registered analysis" in `results/tilt_recovery_grades_alexis.md`): 0–90° in 15° steps, primary snapshot. Added an **extension**, reported beside it and never in its place: 5° steps and three snapshots per CATS run, with bootstrap 95% intervals and P(pass) | HW10 (26 Nov) |
+| Synthetic maps "following the dust-polarization equations used by Chen et al. (2019)"; "the most common pixel value is the estimate" | The equations are unchanged (checked against the paper, `PHYSICS_REVIEW_alexis.md`). Two implementation details changed in HW10: tilted views sample B with cubic splines instead of trilinear interpolation (less smoothing at intermediate tilts), and the KDE peak uses every pixel instead of a random 20 000-pixel subsample | HW10 (26 Nov) |
 
 ### Known limits
 

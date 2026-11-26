@@ -8,8 +8,15 @@ Collects the notebook checks into one reproducible script:
   * dB/B0: turbulent field relative to the mean field (the number that best
     predicted whether the tilt estimator works)
   * density spread sigma(rho)/<rho> and max/mean (collapse indicator)
-  * sonic and Alfven Mach numbers, if velocity files are given
-    (README definition: mean over cells of |v|/c_s and |v|/v_A, v_A = |B|/sqrt(rho))
+  * sonic and Alfven Mach numbers, if velocity files are given.  Standard definitions
+    (Burkhart et al. 2009, 2020; the same as data_pipeline_alexis.py):
+        M_s = v_rms / c_s,     M_A = v_rms / v_A0,   v_A0 = |<B>| / sqrt(<rho>)
+    (code units with v_A = B / sqrt(rho), as in Cho-ENO and Athena++).
+    The old cell-by-cell means <|v|/c_s> and <|v| sqrt(rho)/|B|> are still written, as
+    M_s_cellmean and M_A_cellmean.  PHYSICS_REVIEW_alexis.md, finding 2: with the local
+    total |B| the cell mean is not an Alfven Mach number of the turbulence; it falls as
+    dB/B0 grows (0.20 instead of 1.29 at dB/B0 = 7.6; review_checks_alexis.py, section D) and would call a super-Alfvenic run
+    sub-Alfvenic.
 
 Usage (Cho-ENO, with velocities; c_s is read from the run name, p -> sqrt(p)):
     %run measure_turbulence.py --run b1p1 \
@@ -80,14 +87,31 @@ def measure(rho, B, v=None, cs=None):
     out.update(smoothest_rho=min(r_rho, key=r_rho.get), smoothest_B=min(r_B, key=r_B.get))
     out["anisotropy_ok"] = out["smoothest_rho"] == field_ax == out["smoothest_B"]
 
-    out["c_s"], out["M_s"], out["M_A"] = cs, float("nan"), float("nan")
+    nan = float("nan")
+    out.update(c_s=cs, M_s=nan, M_A=nan, M_s_cellmean=nan, M_A_cellmean=nan)
     if v is not None:
-        speed = np.sqrt(v["x"]**2 + v["y"]**2 + v["z"]**2)
-        vA = np.sqrt(B["x"]**2 + B["y"]**2 + B["z"]**2) / np.sqrt(rho)
-        out["M_A"] = float(np.mean(speed / vA))
-        if cs:
-            out["M_s"] = float(np.mean(speed / cs))
+        out.update(mach_numbers(rho, B, v, cs))
     return out
+
+
+def mach_numbers(rho, B, v, cs=None):
+    """Sonic and Alfven Mach numbers.
+
+    M_s = v_rms / c_s and M_A = v_rms / v_A0 with v_A0 = |<B>| / sqrt(<rho>): the definitions
+    of the CATS catalogue and of data_pipeline_alexis.alfven_speed.  Also returns the
+    cell-by-cell means used before HW10 (M_s_cellmean, M_A_cellmean) for comparison.
+    """
+    nan = float("nan")
+    speed = np.sqrt(v["x"]**2 + v["y"]**2 + v["z"]**2)
+    v_rms = float(np.sqrt(np.mean(speed**2)))
+    B0 = float(np.linalg.norm([B[k].mean() for k in "xyz"]))
+    vA0 = B0 / float(np.sqrt(rho.mean()))
+    vA_local = np.sqrt(B["x"]**2 + B["y"]**2 + B["z"]**2) / np.sqrt(rho)
+    return {"v_rms": v_rms, "v_A0": vA0,
+            "M_A": v_rms / vA0 if vA0 > 0 else nan,
+            "M_s": v_rms / cs if cs else nan,
+            "M_A_cellmean": float(np.mean(speed / vA_local)),
+            "M_s_cellmean": float(np.mean(speed / cs)) if cs else nan}
 
 
 def report(run, r):
@@ -158,12 +182,16 @@ def selftest():
         assert r["field_axis"] == "x" and abs(r["dB_over_B0"] - 0.5) < 1e-3, r
         assert r["divB_labels_ok"] and r["anisotropy_ok"], r
         assert r["M_s"] > 0 and r["M_A"] > 0
+        v_rms = np.sqrt(np.mean(v["x"]**2 + v["y"]**2 + v["z"]**2))
+        assert abs(r["M_A"] - v_rms / (1.0 / np.sqrt(rho2.mean()))) < 1e-3 * r["M_A"]   # v_A0 = B0/sqrt<rho>
+        assert abs(r["M_s"] - v_rms / 1.0) < 1e-9
         # swapped labels must be caught
         r_bad = measure(rho2, {"x": B2["y"], "y": B2["x"], "z": B2["z"]})
         assert not r_bad["divB_labels_ok"]
     print("[check] c_s from Cho-ENO run names                      OK")
     print("[check] dB/B0, field axis, div B and anisotropy checks  OK")
     print("[check] swapped field labels are detected               OK")
+    print("[check] M_s = v_rms/c_s, M_A = v_rms/(|<B>|/sqrt<rho>)    OK")
 
 
 def main():

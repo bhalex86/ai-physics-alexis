@@ -1,0 +1,56 @@
+review_checks_alexis.py: numbers quoted in PHYSICS_REVIEW_alexis.md and REPRODUCIBILITY.md
+
+A. KDE subsample seed noise (pre-HW10 estimator: 20 000-pixel subsample)
+   synthetic divergence-free cube 192^3, fake_cube(seed=0, db=0.5); all-pixel estimate
+   tilt 30: 36864 pixels; 20 seeds give 36.7-37.6 deg (spread 0.9); every pixel: 37.1
+   tilt 45: 36864 pixels; 20 seeds give 43.6-44.3 deg (spread 0.7); every pixel: 43.7
+   tilt 60: 36864 pixels; 20 seeds give 54.6-55.3 deg (spread 0.7); every pixel: 54.9
+
+B. Interpolation smoothing: shift every sample by half a cell (forces interpolation
+   even at 0 and 90 deg) and compare with no shift. order 1 = trilinear B (pre-HW10),
+   order 3 = cubic B (HW10); density is trilinear in both.
+   Athena++ 64^3 (dB/B0 0.21)   order 1:   0 deg: S  -4.2 %, estimate  0.2 deg | 45 deg: S  -1.5 %, estimate  1.4 deg | 90 deg: S  -5.1 %, estimate  0.7 deg
+   Athena++ 64^3 (dB/B0 0.21)   order 3:   0 deg: S  -2.2 %, estimate  0.1 deg | 45 deg: S  +0.1 %, estimate  1.2 deg | 90 deg: S  +1.9 %, estimate  1.0 deg
+   rough synthetic 64^3         order 1:   0 deg: S -16.4 %, estimate  1.8 deg | 45 deg: S  -8.5 %, estimate  2.0 deg | 90 deg: S -22.1 %, estimate  1.6 deg
+   rough synthetic 64^3         order 3:   0 deg: S  -6.2 %, estimate  1.5 deg | 45 deg: S  -4.0 %, estimate  2.0 deg | 90 deg: S  -6.2 %, estimate  0.6 deg
+
+C. Density interpolation on a lognormal field (64^3, spectrum k^-1.5), 400 000 random points
+   sigma_ln 0.5: max/mean      7   mean/true: linear 0.9997, cubic 0.9999 (negative samples 0.0 %), log-cubic 0.9938
+   sigma_ln 1.0: max/mean     34   mean/true: linear 0.9996, cubic 0.9988 (negative samples 0.1 %), log-cubic 0.9766
+   sigma_ln 2.0: max/mean   1039   mean/true: linear 0.9851, cubic 0.9828 (negative samples 11.5 %), log-cubic 0.8975
+
+D. Alfven Mach number: standard v_rms/v_A0 vs the pre-HW10 cell mean <|v|/v_A,local>
+   synthetic, dB/B0 = 0.35: cell mean 1.16, standard 1.29
+   synthetic, dB/B0 = 1.73: cell mean 0.77, standard 1.29
+   synthetic, dB/B0 = 7.62: cell mean 0.20, standard 1.29
+   Athena++ run, dB/B0 = 0.21: cell mean 0.379, standard 0.414; M_s cell mean 0.768, standard 0.827
+
+E. Athena++ run: pre-HW10 method (trilinear B) vs HW10 method (cubic B), low-S, p_max = max
+   (64^2 maps have 4096 pixels, below the old 20 000-pixel subsample, so the KDE is unchanged)
+    0 deg: old   9.6  new   9.6  (difference +0.0); median S old 0.38 new 0.38
+   15 deg: old  17.6  new  17.6  (difference +0.0); median S old 0.44 new 0.44
+   30 deg: old  18.4  new  18.5  (difference +0.1); median S old 0.60 new 0.60
+   45 deg: old  26.0  new  26.0  (difference +0.0); median S old 0.89 new 0.90
+   60 deg: old  36.9  new  36.9  (difference +0.0); median S old 1.32 new 1.35
+   75 deg: old  47.8  new  47.8  (difference +0.0); median S old 2.96 new 3.02
+   90 deg: old  65.4  new  65.4  (difference +0.0); median S old 9.75 new 9.75
+   largest change: 0.1 deg
+
+F. From the committed cache (cache/pipeline_cache_alexis.db), p_max = map maximum, low-S
+   run                        dB/B0  tilt  p0 derived  median S   error  est. with true p0
+   athenapp_1395e2f_snap50     0.21    30       0.127      0.60   -11.6         28.3 (true 30)
+   athenapp_1395e2f_snap50     0.21    45       0.095      0.89   -19.0         43.2 (true 45)
+   athenapp_1395e2f_snap50     0.21    60       0.054      1.32   -23.1         60.1 (true 60)
+   b1p.01_t900                 0.51    30       0.135      1.14    +1.0         35.1 (true 30)
+   b1p.01_t900                 0.51    45       0.127      1.46    -1.9         47.3 (true 45)
+   b1p.01_t900                 0.51    60       0.120      2.32    -6.6         57.0 (true 60)
+   b1p1_t900                   0.58    30       0.114      0.50    +0.8         40.4 (true 30)
+   b1p1_t900                   0.58    45       0.114      0.80    -1.9         49.7 (true 45)
+   b1p1_t900                   0.58    60       0.087      1.56    -4.8         63.6 (true 60)
+   b.1p.01_t750                4.44    30       0.102      5.88   +21.9         58.8 (true 30)
+   b.1p.01_t750                4.44    45       0.106      5.93    +9.0         58.5 (true 45)
+   b.1p.01_t750                4.44    60       0.105      6.21    -7.2         59.1 (true 60)
+   b.1p1_t900                  5.80    30       0.072      4.26   +21.8         63.8 (true 30)
+   b.1p1_t900                  5.80    45       0.079      3.89    +6.1         62.0 (true 45)
+   b.1p1_t900                  5.80    60       0.091      3.45    -6.9         61.4 (true 60)
+   AREPO runs: hw8/physics_check_alexis.csv (Week 8)

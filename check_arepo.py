@@ -115,9 +115,10 @@ def compare_resolution(dens_file, mag_file, grid_dir, labels, field_ax):
     print(f"  {'view':>14} {'res':>4} {'true':>6} {'p_max':>7} {'<S>':>6} {'g_obs':>6} {'lowS':>6} {'err':>6} {'errLowS':>7}")
     diffs = []
     for lab, (Q, U, p, c2, truth) in full.items():
-        rf = fm.estimate_from_maps(Q, U, p, c2, truth)
+        rf = fm.estimate_from_maps(Q, U, p, c2, truth, pmax_percentile=100.0)   # pre-registered rule
         _, Qg, Ug, pg, c2g = fm.stokes_maps(rho, B, los_axis=AXIS_OF[lab])
-        rg = fm.estimate_from_maps(Qg, Ug, pg, c2g, fm.true_gamma_B(B, AXIS_OF[lab]))
+        rg = fm.estimate_from_maps(Qg, Ug, pg, c2g, fm.true_gamma_B(B, AXIS_OF[lab]),
+                                   pmax_percentile=100.0)
         name = f"down {lab} ({'along' if lab == field_ax else 'across'} B)"
         for res, r in (("512", rf), ("256", rg)):
             print(f"  {name:>14} {res:>4} {r['gamma_B_true']:6.1f} {r['p_max']:7.4f} "
