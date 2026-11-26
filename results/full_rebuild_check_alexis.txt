@@ -1,0 +1,27 @@
+Full rebuild check: raw simulation files -> cache, built twice, vs the committed cache
+pipeline version 1.1; sources: athena; CATS run folders found: none
+
+1. two independent builds from the raw files
+   build A  50e1c9edddf639e24cc6e09a4075455349682dbf3662753f5b0b812182f23303
+   build B  50e1c9edddf639e24cc6e09a4075455349682dbf3662753f5b0b812182f23303
+   -> IDENTICAL
+
+2. runs in the committed cache: 5; rebuilt: 1 of them; NOT rebuilt here: cho:b.1p.01:t750, cho:b.1p1:t900, cho:b1p.01:t900, cho:b1p1:t900
+
+3. raw input files (SHA-256 vs the hashes stored in the committed cache)
+   athenapp:1395e2f:Turb.out2.00050     SAME
+
+4. rebuilt rows vs committed rows (runs rebuilt above)
+   datasets: 1 rows in both, 0 only committed, 0 only rebuilt (new tilts/snapshots of the HW10 method)
+   estimates: 14 rows in both, 0 only committed, 24 only rebuilt (new tilts/snapshots of the HW10 method)
+      err: max |difference| 0.2
+      err_lowS: max |difference| 0.1
+      gamma_2D_peak: max |difference| 0.1
+      gamma_obs: max |difference| 0.2
+      gamma_obs_lowS: max |difference| 0.1
+      gamma_obs_truep0: max |difference| 0.1
+      median_S_deg: max |difference| 0.06041
+      p0_derived: max |difference| 0.000105
+      p_max: max |difference| 0.000116
+
+VERDICT: PARTIAL. The runs rebuilt here are deterministic from their raw files, but differ from the committed rows (above): the committed cache was built by pipeline 1.0, this is 1.1. The CATS runs need their cubes: `make check-full-rebuild CATS_DATA=<folder>` (or FETCH=1); add ADOPT=1 to replace the committed cache with the rebuild.

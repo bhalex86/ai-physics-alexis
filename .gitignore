@@ -51,3 +51,6 @@ _backup_before_claude/
 logs/
 .repro/
 .scratch/
+
+# scratch projects of make check-full-rebuild
+.fullcheck/

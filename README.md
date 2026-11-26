@@ -21,7 +21,7 @@ Branch: `week10observability`. The proposal (15 Oct 2026) is the reference for w
 
 The full table, with 95% intervals, is in [`results/tilt_recovery_grades_alexis.md`](results/tilt_recovery_grades_alexis.md); the analysis is in [`PHYSICS_REVIEW_alexis.md`](PHYSICS_REVIEW_alexis.md).
 
-> **Pending rebuild.** HW10 changed the method (cubic sampling of B, a KDE on every pixel, 5° tilts, three snapshots per run). The CATS numbers above still come from the earlier method; `make rebuild` recomputes everything where the data are. On the Athena++ run, the only one rebuilt so far, the estimates moved by at most 0.1°.
+> **Pending rebuild.** The committed cache was built on 17 Nov by pipeline version 1.0. HW10 changed the method (cubic sampling of B, a KDE on every pixel, 5° tilts) and fixed a provenance bug (BUG_LOG.md, bug 1). The numbers above, and `make result`, are therefore reproducible from the committed cache, but **not yet confirmed from the raw CATS files with the current pipeline**. For the Athena++ run, whose raw file is in the repository, `make check-full-rebuild` does that: two builds from the raw file are identical, and they differ from the committed rows by at most 0.2° (`results/full_rebuild_check_alexis.txt`). For the CATS runs it needs the cubes: `make check-full-rebuild CATS_DATA=<folder> ADOPT=1` rebuilds, checks and replaces the committed cache and result.
 
 ## Reproduce it
 
@@ -29,14 +29,16 @@ The full table, with 95% intervals, is in [`results/tilt_recovery_grades_alexis.
 git clone https://github.com/bhalex86/ai-physics-alexis.git && cd ai-physics-alexis
 git checkout week10observability
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-lock.txt   # exact versions the result was made with (Python 3.13)
 make result                 # about 5 s, no download: figure, tables and the run's JSON log in results/
 ```
 
 | Command | What it shows |
 |---|---|
+| `make check-env` | your installed packages are the versions in `requirements-lock.txt` |
 | `make check-reproducible` | two runs are identical, and match the committed files (tables byte for byte, figure pixel for pixel) |
-| `make test` | 110 offline tests: the physics checked against Chen's equations, the pipeline, the server, the logging |
+| `make check-full-rebuild` | the cache itself, rebuilt **from the raw simulation files** twice, matches itself and the committed cache (Athena++ in about 30 s; add `CATS_DATA=<folder>` or `FETCH=1` for CATS) |
+| `make test` | 115 offline tests: the physics checked against Chen's equations, the pipeline, the server, the logging |
 | `make trace` | the call tree of the run that made the committed result, read from its log |
 | `make review-checks` | recomputes every number quoted in the review documents |
 | `make rebuild` | recomputes everything from the CATS and AREPO data (needs the data; about 2 GB of downloads) |
@@ -107,7 +109,7 @@ python verify.py <V-id> --expect tilt_deg_low_S=<value>  # VALID and MATCH = Cla
 
 | Question | Where | Command |
 |---|---|---|
-| 1. Can I reproduce the main result from the README alone? | [Reproduce it](#reproduce-it); Claude Desktop: [Connect](#connect-the-mcp-server-and-the-data-to-claude-desktop) | `make result`, then `make check-reproducible` |
+| 1. Can I reproduce the main result from the README alone? | [Reproduce it](#reproduce-it); Claude Desktop: [Connect](#connect-the-mcp-server-and-the-data-to-claude-desktop) | `make result`, then `make check-reproducible` and `make check-full-rebuild` |
 | 2. Are seeds and API keys handled correctly? | [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md). Keys live in `.env` and `~/.cats_mcp_key`: git-ignored, never logged, never in the history | `make test` |
 | 3. Is every quantitative claim traceable to an output? | Result: `results/`, from the hash-checked cache. Review numbers: `results/review_checks_alexis.txt`. Claude's answers: verification IDs | `make review-checks`, `python data_pipeline_alexis.py --verify` |
 | 4. Is AI tool use documented? | [`AI_USE.md`](AI_USE.md) | none |

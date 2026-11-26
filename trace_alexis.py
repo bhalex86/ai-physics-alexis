@@ -50,6 +50,8 @@ def print_run(run_id, recs, show_args=False, failures_only=False):
     print(f"=== run {run_id}  component={start.get('component')}  "
           f"started {start.get('timestamp')}  git {str(git.get('commit'))[:10]}"
           f"{' (+uncommitted changes)' if git.get('uncommitted_changes') else ''}")
+    if git.get("changed_files"):
+        print(f"    changed vs commit: {', '.join(git['changed_files'])}")
     print(f"    argv: {' '.join(start.get('argv') or [])}")
     if start.get("parent_run_id"):
         print(f"    started by run {start['parent_run_id']}")

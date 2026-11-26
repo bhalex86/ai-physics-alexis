@@ -1,7 +1,7 @@
 # PHYS 7440 project (B. Alexis): reproduction targets.  `make help` lists them.
 #
 # From a fresh clone:
-#     python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+#     python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements-lock.txt
 #     make result
 #
 # PYTHON defaults to the python3 on your PATH (inside the venv, that is the venv's).
@@ -12,11 +12,14 @@ RESULT_LOG := $(RESULTS)/key_result_run_alexis.jsonl
 ATHDF := data/athena/Turb.out2.00050.athdf
 export PYTHONHASHSEED := 0
 
-.PHONY: review-checks rebuild help result check-reproducible trace pipeline pipeline-athena test sample clean-logs
+.PHONY: review-checks rebuild help result check-reproducible check-full-rebuild check-env lock trace pipeline pipeline-athena test sample clean-logs
 
 help:
 	@echo "make result              key result (figure + tables) from the committed cache, with its JSON log"
 	@echo "make check-reproducible  run 'make result' twice and compare the outputs byte for byte"
+	@echo "make check-full-rebuild  rebuild the cache from the RAW files twice, compare with the committed cache"
+	@echo "                         (Athena++ only by default; CATS_DATA=<folder> or FETCH=1 adds CATS; ADOPT=1)"
+	@echo "make check-env           compare installed package versions with requirements-lock.txt"
 	@echo "make trace               print the call tree of the committed result run from its log"
 	@echo "make review-checks       recompute every number quoted in the review documents (~1 min)"
 	@echo "make test                all offline tests"
@@ -46,6 +49,23 @@ check-reproducible:
 	@$(PYTHON) make_key_result_alexis.py --compare .repro/a .repro/committed
 	@rm -rf .repro
 
+# From the raw simulation files, not the committed cache: build twice, compare the two
+# builds, the raw-file hashes and every row with the committed cache, then the key result.
+#   make check-full-rebuild                         Athena++ only (in the repository)
+#   make check-full-rebuild CATS_DATA=~/cats        + the CATS cubes you already have
+#   make check-full-rebuild FETCH=1                 + download the CATS cubes (~1 GB)
+#   ... ADOPT=1                                     replace the committed cache + result
+check-full-rebuild:
+	$(PYTHON) check_full_rebuild_alexis.py $(if $(CATS_DATA),--cats-data $(CATS_DATA)) \
+	  $(if $(FETCH),--fetch) $(if $(ADOPT),--adopt)
+
+check-env:
+	$(PYTHON) check_env_alexis.py
+
+# Re-pin after a deliberate upgrade (then rerun make result and commit both).
+lock:
+	$(PYTHON) -m pip freeze --exclude-editable | sed '1i # Full, exact environment the committed result was made and checked with (pip freeze).\n# Install with:  pip install -r requirements-lock.txt   Regenerate with:  make lock' > requirements-lock.txt
+
 review-checks:
 	OBS_LOG_FILE=results/review_checks_run_alexis.jsonl $(PYTHON) review_checks_alexis.py
 
@@ -54,7 +74,7 @@ trace:
 
 test:
 	ATHDF=$(ATHDF) $(PYTHON) -m pytest -q test_physics_alexis.py test_observability_alexis.py test_data_pipeline_alexis.py \
-	  test_mcp_server_alexis.py test_evaluate.py
+	  test_mcp_server_alexis.py test_evaluate.py test_full_rebuild_alexis.py
 
 pipeline:
 	$(PYTHON) data_pipeline_alexis.py --fetch --build --verify --all
@@ -72,4 +92,4 @@ sample:
 	$(PYTHON) make_sample_data.py
 
 clean-logs:
-	rm -rf logs .repro .scratch
+	rm -rf logs .repro .scratch .fullcheck

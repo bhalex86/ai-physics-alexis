@@ -245,23 +245,41 @@ class _ContextFilter(logging.Filter):
         return True
 
 
-def _git_info():
-    here = Path(__file__).resolve().parent
+def _git_info(log_path=None, repo_dir=None):
+    """Commit the run started from, and the tracked files that differ from it.
+
+    HW10 fix: the log file this run is writing is left out of the dirty check.  ``make
+    result`` deletes and rewrites the committed log, so before the fix every run of it
+    reported ``uncommitted_changes: true`` even from a clean checkout.  The changed files
+    are listed, so a reviewer can see *what* differed, not just that something did.
+    """
+    here = Path(repo_dir) if repo_dir else Path(__file__).resolve().parent
     try:
         sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=here, capture_output=True,
                              text=True, timeout=5).stdout.strip() or None
-        dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"],
-                               cwd=here, capture_output=True, text=True, timeout=5).stdout.strip()
-        return {"commit": sha, "uncommitted_changes": bool(dirty)}
+        top = subprocess.run(["git", "rev-parse", "--show-toplevel"], cwd=here,
+                             capture_output=True, text=True, timeout=5).stdout.strip()
+        lines = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"],
+                               cwd=here, capture_output=True, text=True,
+                               timeout=5).stdout.splitlines()
+        changed = sorted(l[3:].split(" -> ")[-1] for l in lines if l.strip())
+        if log_path and top:
+            try:
+                own = Path(log_path).resolve().relative_to(Path(top).resolve()).as_posix()
+                changed = [f for f in changed if f != own]
+            except ValueError:
+                pass
+        return {"commit": sha, "uncommitted_changes": bool(changed),
+                "changed_files": changed[:50]}
     except Exception:
-        return {"commit": None, "uncommitted_changes": None}
+        return {"commit": None, "uncommitted_changes": None, "changed_files": None}
 
 
 def _versions():
     from importlib.metadata import PackageNotFoundError, version
     out = {"python": platform.python_version(), "platform": platform.platform()}
-    for name in ("numpy", "scipy", "astropy", "h5py", "matplotlib", "anthropic", "mcp",
-                 "tenacity", "requests", "python-json-logger"):
+    for name in ("numpy", "scipy", "astropy", "h5py", "matplotlib", "pillow", "pandas",
+                 "anthropic", "mcp", "tenacity", "requests", "python-json-logger"):
         try:
             out[name] = version(name)
         except PackageNotFoundError:
@@ -302,7 +320,7 @@ def configure(component, log_file=None, project_root=None, capture_root=True):
                   n_calls=0, n_fail=0)
     TOOL_LOGGER.info("run_start", extra={
         "event": "run_start", "argv": summarize(sys.argv), "cwd": scrub(os.getcwd()),
-        "seeds": _state["seeds"], "versions": _versions(), "git": _git_info(),
+        "seeds": _state["seeds"], "versions": _versions(), "git": _git_info(path),
         "parent_run_id": os.environ.get("OBS_PARENT_RUN_ID"), "pid": os.getpid()})
     return path
 

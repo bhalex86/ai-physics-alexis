@@ -1,33 +1,36 @@
-# Everything this project imports. Tested with Python 3.10, 3.13 and 3.14.
-#   pip install -r requirements.txt
+# Everything this project imports, pinned to the exact versions the committed result was
+# made with (Python 3.13).  requirements-lock.txt pins every dependency of these too:
+#   pip install -r requirements-lock.txt      (exact environment; what `make result` expects)
+#   pip install -r requirements.txt           (same direct packages, resolver picks the rest)
+# `make check-env` reports any installed version that differs from requirements-lock.txt.
 
 # MCP server (mcp_server_alexis.py). mcp is the 2.x series: its server API differs from 1.x.
-mcp>=2.3,<3
-pydantic>=2.7
-numpy>=2.0
-scipy>=1.13
-astropy>=6.0
-pandas>=2.2
-certifi>=2024.2
+mcp==2.3.0
+pydantic==2.14.4
+numpy==2.5.5
+scipy==1.18.1
+astropy==8.0.3
+pandas==3.1.1
+certifi==2026.11.20
 
 # tests (test_mcp_server_alexis.py, test_evaluate.py)
-pytest>=8.0
-jsonschema>=4.20
+pytest==9.2.0
+jsonschema==4.26.0
 
 # analysis pipeline: AREPO HDF5 files (prepare_arepo.py, check_arepo.py)
-h5py>=3.10
+h5py==3.16.0
 # the comparison PDF (make_comparison_pdf.py)
-reportlab>=4.0
+reportlab==5.1.2
 
 # running the analysis notebook
-jupyter
+jupyter==1.1.1
 # --- added for HW9 (data_pipeline_alexis.py) ---
-tenacity>=8.2          # retries with exponential backoff
-requests>=2.31         # HTTP
-python-dotenv>=1.0     # optional: GITHUB_TOKEN from .env
-matplotlib>=3.8        # lab notebook plot
+tenacity==9.2.1  # retries with exponential backoff
+requests==2.34.2  # HTTP
+python-dotenv==1.2.4  # optional: GITHUB_TOKEN from .env
+matplotlib==3.11.2  # lab notebook plot
 # --- added for HW10 (obs_logging_alexis.py): structured JSON logs of every tool call
-python-json-logger>=3.1
+python-json-logger==4.2.0
 # HW10: the evaluation harness (hw8/eval_harness.py) and its tests
-pint>=0.24
-anthropic>=0.40
+pint==0.26.2
+anthropic==2.14.0

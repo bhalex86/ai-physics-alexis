@@ -271,3 +271,24 @@ def test_eval_harness_reports_a_tool_loop_not_no_answer(sample_project, tmp_path
     recs = read_log(log)
     assert sum(r.get("tool") == "anthropic.messages.create" for r in recs) == eh.MAX_TOOL_ROUNDS
     assert any(r["event"] == "tool_loop_cap_reached" for r in recs)
+
+
+def test_git_info_ignores_the_log_being_written(tmp_path):
+    """BUG_LOG.md bug 8: rewriting the committed log must not mark the tree as dirty,
+    but a change to any other tracked file must, and must be named."""
+    import subprocess
+    git = lambda *a: subprocess.run(["git", *a], cwd=tmp_path, check=True, capture_output=True)
+    git("init", "-q")
+    (tmp_path / "results").mkdir()
+    log = tmp_path / "results" / "run.jsonl"
+    log.write_text("old\n")
+    (tmp_path / "code.py").write_text("x = 1\n")
+    git("add", ".")
+    git("-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "init")
+    log.unlink()                                     # what `make result` does first
+    log.write_text("new\n")
+    info = obs._git_info(log, repo_dir=tmp_path)
+    assert info["commit"] and info["uncommitted_changes"] is False and info["changed_files"] == []
+    (tmp_path / "code.py").write_text("x = 2\n")
+    info = obs._git_info(log, repo_dir=tmp_path)
+    assert info["uncommitted_changes"] is True and info["changed_files"] == ["code.py"]

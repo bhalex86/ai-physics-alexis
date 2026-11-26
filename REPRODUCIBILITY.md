@@ -8,10 +8,23 @@
 |---|---|
 | `make check-reproducible` | the key result, made twice, is identical, and matches the committed files (tables byte for byte, figure pixel for pixel) |
 | `python data_pipeline_alexis.py --verify` | the committed cache still has the hash recorded when it was built, and every raw data file still has its recorded SHA-256. It prints `VERIFY OK` |
-| `make test` | 110 tests pass, including two that build the pipeline twice and compare the results |
+| `make test` | 115 tests pass, including two that build the pipeline twice and compare the results, and three that run the full-rebuild check on synthetic CATS cubes |
+| `make check-full-rebuild` | the cache, rebuilt **from the raw simulation files** in two independent scratch folders, is identical both times; the raw files have the SHA-256 stored in the committed cache; every committed row is compared column by column. Report: `results/full_rebuild_check_alexis.txt` |
+| `make check-env` | the installed packages are the versions in `requirements-lock.txt` |
 | `make rebuild`, then `python data_pipeline_alexis.py --build --verify --all` | a full rebuild from the CATS data matches the previous build. It prints `REPRODUCED` (needs the data) |
 
-Last checked 26 Nov 2026 (Linux, Python 3.13): both runs identical, and a fresh clone in a new virtual environment matched the committed result.
+Last checked 26 Nov 2026 (Linux, Python 3.13, `requirements-lock.txt`): both runs identical, and a fresh clone in a new virtual environment matched the committed result.
+
+## What each check proves, and what is still open
+
+There are two steps between the raw data and the figure, and they are checked separately:
+
+1. **cache → result** (`make check-reproducible`). The grading, tables and figure are recomputed from the committed cache, twice. This is **exact**: identical bytes for the tables, identical pixels for the figure, on a fresh clone.
+2. **raw files → cache** (`make check-full-rebuild`). The cache is rebuilt from the raw simulation files with the current pipeline, in two separate scratch folders.
+   - *Athena++ (raw file in the repository):* the two builds are **identical** (content hash `50e1c9ed…`), and the raw file has the SHA-256 recorded in the committed cache. The rebuilt estimates differ from the committed ones by **at most 0.2°** (`p_max` by 1.2 × 10⁻⁴). That is expected: the committed cache was built on 17 Nov by pipeline **1.0**, and HW10 changed the method (pipeline 1.1).
+   - *CATS (about 1 GB, not in the repository, and not reachable from the environment the HW10 changes were made in):* **not yet rebuilt.** Until it is, the committed cache also still holds the wrong `source_url` of BUG_LOG.md bug 1.
+
+**To close step 2**, on a computer with the CATS cubes: `make check-full-rebuild CATS_DATA=/path/to/cats ADOPT=1`. It replaces the committed cache, `provenance_alexis.json` and `results/` only if the two builds are identical and the raw files are the same ones; then commit them together with `results/full_rebuild_check_alexis.txt`.
 
 ## Seeds
 
@@ -70,7 +83,7 @@ So verification IDs and run IDs differ every time. That is expected.
 | The figure | every plotting setting is fixed in the script, so local matplotlib settings cannot change it. The PNG *bytes* still depend on the Pillow version, so the figure is compared by its pixels |
 | Order of dictionaries and sets | everything is sorted before it is written |
 
-## Not covered
+## Environment, and what is not covered
 
-- **Exact package versions.** `requirements.txt` gives minimum versions. The versions actually used are recorded in every log and in `provenance_alexis.json`. For an exact environment, run `pip freeze > requirements-lock.txt`.
+- **Package versions** are now pinned. `requirements.txt` pins every direct dependency (`==`), and `requirements-lock.txt` pins the full environment (all 140 packages, from `pip freeze`) that the committed result was made with. `make check-env` lists any installed version that differs. The versions are also written in every log's `run_start` line. A different Python version (the lock is for 3.13) is not covered: some pinned versions may not exist for it. The committed cache itself was built on macOS with Python 3.14 and pipeline 1.0 (see above).
 - **GPU or multithreaded nondeterminism.** None of the code uses either.

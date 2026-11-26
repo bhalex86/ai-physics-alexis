@@ -11,8 +11,8 @@ PHYS 7440 project, B. Alexis. Failure-mode categories are from the class taxonom
 | **Found** | 26 Nov 2026 (HW10), while adding the JSON log to `data_pipeline_alexis.py` |
 | **Failure mode** | **Silent failure.** No error, no warning; the pipeline exits 0 and `--verify` passes, but a provenance field is wrong. |
 | **File** | `data_pipeline_alexis.py` (branch `week9pipeline`, commit `6ca05b3`) |
-| **Lines affected** | 502, 549, 833, 847 (before the fix) → 529, 577, 870, 884, plus the new helper `cats_url_of` at 489 (after) |
-| **Status** | Fixed; regression test `test_source_url_is_the_url_of_the_file_actually_used` in `test_data_pipeline_alexis.py` |
+| **Lines affected** | 502, 549, 833, 847 (before the fix, commit `6ca05b3`) → 537, 585, 874, 888, plus the new helper `cats_url_of` at 497–510 (after; line numbers of the current `week10observability` head) |
+| **Status** | Code fixed; regression test `test_source_url_is_the_url_of_the_file_actually_used` in `test_data_pipeline_alexis.py`. **The committed cache still holds the wrong URL until it is rebuilt from the CATS cubes** (see *Effect on committed outputs*) |
 
 ### What went wrong
 
@@ -53,13 +53,24 @@ def cats_url_of(local, run_folder, snap, comp):
     return cands[0][0]                             # file not on disk: the URL tried first
 ```
 
-All four lines now call `cats_url_of(<the local file>, ...)` instead of `cats_urls(...)[0][0]`. Line 526 (the record of a *failed* download) still records the first URL tried, which is correct there. `PIPELINE_VERSION` goes from 1.0 to 1.1.
+All four lines now call `cats_url_of(<the local file>, ...)` instead of `cats_urls(...)[0][0]`. Line 561 (the record of a *failed* download) still records the first URL tried, which is correct there. `PIPELINE_VERSION` goes from 1.0 to 1.1.
 
 The regression test runs the fake CATS server, which serves the density uncompressed as the real archive does. It fetches the run, then fetches again so the files count as pre-existing, then builds. It checks that every recorded URL ends in the name of the file on disk. It also GETs `datasets.source_url` and checks that the bytes it returns have the SHA-256 stored in the cache. Before the fix the test failed at the first check (`.../dens_t750.fits.gz`); after the fix all 28 pipeline tests pass.
 
 ### Effect on committed outputs
 
-No tilt, grade or figure changes: the URL is not an input to any calculation. The committed cache was **not** rebuilt in this commit: the rebuild needs the four CATS runs (about 1 GB), which I could not download from this environment. On the next `make pipeline`, the `source_url` of `cho:b.1p.01:t750` becomes `.../dens_t750.fits`. That changes one row, so the cache content hash changes once. The first `--build --verify` after the fix will therefore print `NOT REPRODUCED` against the old hash `8f9c8db5…`. This is expected. Running `make pipeline` a second time must then print `REPRODUCED`.
+No tilt, grade or figure changes: the URL is not an input to any calculation.
+
+**The committed cache has not been rebuilt yet**, so its row for `cho:b.1p.01:t750` still carries the 404 URL. The rebuild needs the four CATS runs (about 1 GB), which the archive does not serve to the environment this fix was written in. The committed cache is also older than the fix in a second way: it was built on 17 Nov by pipeline version 1.0 (`provenance_alexis.json`, `pipeline.version`), before the HW10 method changes. Rebuilding the Athena++ run from its raw file with the current pipeline moves its estimates by at most 0.2° (`results/full_rebuild_check_alexis.txt`).
+
+To close this, on a computer with the CATS cubes:
+
+```bash
+make check-full-rebuild CATS_DATA=/path/to/cats            # report only
+make check-full-rebuild CATS_DATA=/path/to/cats ADOPT=1    # replace cache + result, then commit
+```
+
+The check builds the cache twice from the raw files, requires the two builds to be identical and the raw files to have the SHA-256 stored in the committed cache, compares every row, and only then replaces the committed cache, `provenance_alexis.json` and `results/`. After adoption, `source_url` of `cho:b.1p.01:t750` is `.../dens_t750.fits`, and the cache content hash changes from `8f9c8db5…` once. The check's tests (`test_full_rebuild_alexis.py`) include a committed cache with the old URL and confirm the check reports it.
 
 ---
 
@@ -95,7 +106,7 @@ These four were found in the physics review of 26 Nov 2026. The full analysis, w
 |---|---|---|---|---|---|
 | 3 | The server labelled every δB/B₀ < 1 as the reliable regime. The project's own Athena++ run (δB/B₀ = 0.21) fails by −19° at 45°, and AREPO B100 (0.12) is −14° at 60°. Too ordered a field makes p_max underestimate p₀, so the tilt comes out low; Chen et al. (2019, Appendix A) state this limit, and the code ignored it. Claude was told an estimate was reliable when the project's data say it is biased. | **Silent failure** (a wrong statement served as fact; the LLM would repeat it) | `mcp_server_alexis.py` 98, 567–578, 738 → 98–105, 577–606, 767; `hw8/make_ground_truth.py` 170 → 173–174 | Three-way `regime()` with a `reliability` field (`reliable` / `biased_low` / `unreliable`) and a lower-bound warning below δB/B₀ = 0.35; the same rule in the answer key (its two items are unchanged) | `test_regime_rule_matches_the_six_tested_runs`, `test_very_ordered_field_is_flagged_biased_low`, `test_very_ordered_field_is_biased_low_with_derived_p0` |
 | 4 | `measure_turbulence.py` computed M_A as the cell mean of \|v\|√ρ/\|B\| using the local total field, not v_rms/(\|⟨B⟩\|/√⟨ρ⟩). With δB/B₀ = 7.6 this gives 0.20 instead of 1.29 (`results/review_checks_alexis.txt`, section D), so a super-Alfvénic run reads as sub-Alfvénic. It disagreed with the pipeline's own M_A. | **Silent failure** | `measure_turbulence.py` 86–89 → 93, 97–115 | New `mach_numbers()` with standard M_s and M_A; the old values kept as `*_cellmean` | `--selftest`, `test_mach_numbers_are_standard_and_match_the_pipeline` |
-| 5 | The README listed `stageAB_results.csv`, `stageAB_grades.csv`, `turbulence.csv` and `runs.json` as committed. They are on no branch, so `build_db.py --results stageAB_results.csv` fails from a clone. | **Non-reproducibility** | `README.md`, the file table in section 2 | README corrected, with a working alternative; the files must be committed from the author's computer | n/a (documentation) |
+| 5 | The README listed `stageAB_results.csv`, `stageAB_grades.csv`, `turbulence.csv` and `runs.json` as committed. They were on no branch, so `build_db.py --results stageAB_results.csv` failed from a clone. | **Non-reproducibility** | `README.md`, the file table in section 2 | README corrected. `stageAB_results.csv`, `stageAB_grades.csv` and `runs.json` are now committed (commit `2dc35c8`); `turbulence.csv` is not, and the README no longer lists it | n/a (documentation); `git ls-files` |
 | 6 | `firstmap_b.estimate_from_maps` took the p_max rule from a module global that defaults to 99.5 (the pre-registered rule is 100). `check_arepo.py` silently used 99.5; the pipeline changed and restored the global. | **Non-reproducibility** (a hidden-state hazard; no stored number was wrong) | `firstmap_b.py` 32, 144 → 32–34, 137–150; `data_pipeline_alexis.py` (`estimate_run`); `check_arepo.py` 118, 120 | Explicit `pmax_percentile=` argument; the callers pass 100 | `test_explicit_pmax_rule_equals_module_setting`; the Athena++ cache hash is unchanged (`c2cc4e22…`) |
 
 ## Bug 7: regenerating the answer key could silently shrink it
@@ -107,3 +118,15 @@ These four were found in the physics review of 26 Nov 2026. The full analysis, w
 | **File / lines** | `hw8/make_ground_truth.py`, `main()`: runs without cubes are skipped (lines 102–107 of the HW8 version), and the output file is overwritten regardless |
 | **What went wrong** | Run in a folder where some cubes were missing, it replaced the 20-item `ground_truth_alexis.json` with a 5-item one, printing only a "skipped" note. The HW8 evaluation would then have scored Claude on a quarter of the questions without noticing. |
 | **Fix** | `rebuild_alexis.py` writes the new key to a temporary file and replaces the committed key only when `_skipped` is empty (`--allow-skipped` overrides). Tested on a project with no cubes: the committed key was left untouched. |
+
+## Bug 8: every result log said "uncommitted changes", even from a clean checkout
+
+| | |
+|---|---|
+| **Found** | 26 Nov 2026, in the peer review of the committed log |
+| **Failure mode** | **Silent failure** (wrong provenance metadata; nothing fails) |
+| **File / lines** | `obs_logging_alexis.py`, `_git_info()` (lines 248–258 before → 248–276 after) and its call in `configure()` (line 305 → 323) |
+| **What went wrong** | `make result` first deletes the committed log, then each step appends to it. The dirty check (`git status --porcelain`) therefore always saw the log file itself as changed, and every `run_start` line said `uncommitted_changes: true`. A reviewer could not tell a run from a clean commit from a run with edited code. On top of that, the committed log named commit `82eb64b`, which was never pushed: the log was made before the final commit. |
+| **Fix** | `_git_info(log_path)` leaves out the log file this run is writing, and records `changed_files`, the list of tracked files that differ from the commit (`trace_alexis.py` prints it). The committed result log was regenerated on a commit that is on the branch, from a clean tree. |
+| **Test** | `test_git_info_ignores_the_log_being_written` in `test_observability_alexis.py` |
+

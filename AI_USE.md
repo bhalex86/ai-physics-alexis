@@ -19,7 +19,7 @@ Lines marked **(author to confirm)** describe earlier weeks from the README and 
 
 ## How AI-written work was checked
 
-- **Tests:** 110 offline tests (`make test`), including physics invariants that hold regardless of the code (`test_physics_alexis.py`: Chen eqs. 7–10, the eq. 8 ceiling, geometry invariance) and a regression test for every bug in `BUG_LOG.md`, each shown to fail before its fix.
+- **Tests:** 115 offline tests (`make test`), including physics invariants that hold regardless of the code (`test_physics_alexis.py`: Chen eqs. 7–10, the eq. 8 ceiling, geometry invariance) and a regression test for every bug in `BUG_LOG.md`, each shown to fail before its fix.
 - **Against the paper:** every implemented equation was compared with Chen et al. (2019), eqs. 1–10 and Table A1, and the Monte Carlo test reproduces their Table 1 (`monte_carlo.py`).
 - **Reproduction:** `make check-reproducible`, and a fresh clone in a new virtual environment reproduces the committed result (tables byte for byte, figure pixel for pixel).
 - **Traceability:** every number in the review documents is either read from the committed cache or recomputed by `review_checks_alexis.py` (output committed in `results/`).
