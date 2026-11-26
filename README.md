@@ -1,35 +1,62 @@
-What you need: Claude Desktop installed and signed in, Python 3.10 or newer (python3 --version), and Git.
-Step 1. Get the code
-bash
+
+# Setup: cats-tilt MCP server with Claude Desktop
+
+**What you need:** Claude Desktop installed and signed in, Python 3.10 or newer (`python3 --version`), and Git.
+
+## Step 1. Get the code
+
+```bash
 cd ~
 git clone https://github.com/bhalex86/ai-physics-alexis.git
 cd ai-physics-alexis
 git checkout week10observability
-The last line is needed until the pull request is merged into main.
-Step 2. Install the Python packages
-bash
+```
+
+> The last line is needed until the pull request is merged into `main`.
+
+## Step 2. Install the Python packages
+
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-Step 3. Check it works before involving Claude
-bash
+```
+
+## Step 3. Check it works before involving Claude
+
+```bash
 make test
-Expected last line: 110 passed, 1 skipped. If this fails, Claude Desktop won't work either, so fix it first.
-Step 4. Make the sample project
-bash
+```
+
+Expected last line: `110 passed, 1 skipped`. If this fails, Claude Desktop won't work either, so fix it first.
+
+## Step 4. Make the sample project
+
+```bash
 python make_sample_data.py
-This builds sample_project/ in about 15 seconds: a small synthetic turbulent cube registered as sample_run, a Stokes-map file, and a results database. It's enough to exercise every tool.
-Step 5. Find the three paths Claude Desktop needs
-bash
+```
+
+This builds `sample_project/` in about 15 seconds. It contains a small synthetic turbulent cube registered as `sample_run`, a Stokes-map file, and a results database. That's enough to exercise every tool.
+
+## Step 5. Find the three paths Claude Desktop needs
+
+```bash
 echo "$PWD/.venv/bin/python"
 echo "$PWD/mcp_server_alexis.py"
 echo "$PWD/sample_project"
+```
+
 Copy the three lines it prints.
-Step 6. Register the server with Claude Desktop
-bash
+
+## Step 6. Register the server with Claude Desktop
+
+```bash
 open -e "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
-If that says the file doesn't exist, open Claude Desktop → Settings → Developer → Edit Config, which creates it. Put in the following, replacing the three paths with yours from step 5:
-json
+```
+
+If that says the file doesn't exist, open **Claude Desktop → Settings → Developer → Edit Config**, which creates it. Put in the following, replacing the three paths with yours from step 5:
+
+```json
 {
   "mcpServers": {
     "cats-tilt": {
@@ -39,27 +66,37 @@ json
     }
   }
 }
-If the file already lists other servers, add the "cats-tilt": {...} block inside the existing "mcpServers", separated from the others by a comma. Save the file.
-Step 7. Restart Claude Desktop
-Quit it completely with Cmd+Q; closing the window isn't enough. Then reopen it. In a new chat, open the tools menu (the slider icon in the message box): cats-tilt should be listed with 13 tools.
-Step 8. Try it
-Ask these in new chats:
+```
 
-1. "List the runs available in cats-tilt." You should get sample_run, with stored results at 0–90°.
-2. "Estimate the tilt of sample_run viewed at 45°, with its uncertainty and field regime. Give the verification ID." You should get a number, a V-… verification ID, and the regime note.
-3. "Look up the stored result for sample_run at 120 degrees." This is an error case: it should come back INVALID_INPUT, and Claude should say so rather than invent a value.
-4. "Show me the code that turns p into the tilt." Claude should call read_source and quote Chen eq. 10.
+If the file already lists other servers, add the `"cats-tilt": {...}` block inside the existing `"mcpServers"`, separated from the others by a comma. Save the file.
 
-Step 9. Check what Claude reported
-Back in Terminal, in the repo folder with the venv active:
-bash
+## Step 7. Restart Claude Desktop
+
+Quit it completely with **Cmd+Q**. Closing the window isn't enough. Then reopen it. In a new chat, open the tools menu (the slider icon in the message box). **cats-tilt** should be listed with 13 tools.
+
+## Step 8. Try it
+
+Ask each of these in a new chat:
+
+1. *"List the runs available in cats-tilt."*
+   You should get `sample_run`, with stored results at 0–90°.
+2. *"Estimate the tilt of sample_run viewed at 45°, with its uncertainty and field regime. Give the verification ID."*
+   You should get a number, a `V-…` verification ID, and the regime note.
+3. *"Look up the stored result for sample_run at 120 degrees."*
+   This is an error case. It should come back `INVALID_INPUT`, and Claude should say so rather than invent a value.
+4. *"Show me the code that turns p into the tilt."*
+   Claude should call `read_source` and quote Chen eq. 10.
+
+## Step 9. Check what Claude reported
+
+Go back to Terminal, in the repo folder with the venv active:
+
+```bash
 export CATS_PROJECT_DIR="$PWD/sample_project"
 python verify.py --list
 python verify.py V-xxxx-001-xxxxxxxxxxxx --expect tilt_deg_low_S=<number Claude gave>
 python trace_alexis.py sample_project/logs/mcp_server_alexis.jsonl --run last --args
-
-
-
+```
 # cats-tilt: an MCP server for magnetic-field tilt from dust polarization
 This along with most of the code was generated using Claude Opus 5.5 . Please note that the data files were used from a local folder
 `mcp_server_alexis.py` lets an LLM client such as Claude Desktop estimate how far a cloud's magnetic field is tilted out of the plane of the sky. It uses the dust-polarization method of Chen et al. (2019, MNRAS 485, 3499) on public MHD simulations from the CATS archive (Burkhart et al. 2020, ApJ 905, 14).
